@@ -35,7 +35,7 @@ const FeaturedBoards = (props) => {
           <Grid container spacing={4} direction="row">
             {featuredBoards &&
               featuredBoards.map((post) => (
-                <FeaturedBoard key={post.id} post={post} />
+                <FeaturedBoard key={post.board_id} post={post} />
               ))}
           </Grid>
         </main>
