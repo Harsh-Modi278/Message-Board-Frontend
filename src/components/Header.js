@@ -135,7 +135,8 @@ const Header = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {sections !== undefined &&
+      {user &&
+        sections !== undefined &&
         sections.length > 0 &&
         sections.map((section) => (
           <MenuItem onClick={handleProfileMenuOpen} key={section.url}>
@@ -153,19 +154,37 @@ const Header = () => {
             </RouterLink>
           </MenuItem>
         ))}
-
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      {user && (
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <p>Profile</p>
+        </MenuItem>
+      )}
+      {!user && (
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <RouterLink
+            key={"SignIn"}
+            to={"/login"}
+            style={{
+              flexShrink: "0",
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
+            <Typography variant="h6" component="h6">
+              {"Sign In"}
+            </Typography>
+          </RouterLink>
+        </MenuItem>
+      )}
     </Menu>
   );
 
@@ -234,17 +253,6 @@ const Header = () => {
                   <AccountCircle />
                 </IconButton>
               </Box>
-              <Box sx={{ display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="medium"
-                  aria-label="show more"
-                  aria-haspopup="true"
-                  color="inherit"
-                  onClick={handleMobileMenuOpen}
-                >
-                  <MoreIcon />
-                </IconButton>
-              </Box>
             </>
           )}
 
@@ -268,14 +276,21 @@ const Header = () => {
               </Box>
             </>
           )}
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+            <IconButton
+              size="medium"
+              aria-label="show more"
+              aria-haspopup="true"
+              color="inherit"
+              onClick={handleMobileMenuOpen}
+            >
+              <MoreIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
-      {user && (
-        <>
-          {renderMobileMenu}
-          {renderMenu}
-        </>
-      )}
+      {user && <>{renderMenu}</>}
+      {renderMobileMenu}
     </Box>
   );
 };
