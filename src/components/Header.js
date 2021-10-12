@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useContext } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { SECTIONS } from "../constants/homeHeaderConstants";
 import { styled, alpha } from "@mui/material/styles";
@@ -13,6 +13,8 @@ import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import LoginIcon from "@mui/icons-material/Login";
+import { UserContext } from "../UserContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -56,6 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const Header = () => {
   const sections = SECTIONS;
+  const { user, setUser } = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
@@ -83,6 +86,16 @@ const Header = () => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("userObj");
+    // upon close event close menu
+    setAnchorEl(null);
+
+    // also close mobile menu
+    handleMobileMenuClose();
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -101,7 +114,7 @@ const Header = () => {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
 
@@ -125,7 +138,7 @@ const Header = () => {
       {sections !== undefined &&
         sections.length > 0 &&
         sections.map((section) => (
-          <MenuItem onClick={handleProfileMenuOpen}>
+          <MenuItem onClick={handleProfileMenuOpen} key={section.url}>
             <RouterLink
               key={section.title}
               to={section.url}
@@ -157,7 +170,7 @@ const Header = () => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar position="static">
         <Toolbar>
           <RouterLink to="/" style={{ textDecoration: "none", color: "white" }}>
@@ -182,14 +195,65 @@ const Header = () => {
           {/* To separate items to left and right side */}
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* Sections */}
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {sections !== undefined &&
-              sections.length > 0 &&
-              sections.map((section) => (
+          {user && (
+            <>
+              {/* Sections */}
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                {sections !== undefined &&
+                  sections.length > 0 &&
+                  sections.map((section) => (
+                    <RouterLink
+                      key={section.title}
+                      to={section.url}
+                      style={{
+                        padding: "1rem",
+                        flexShrink: "0",
+                        textDecoration: "none",
+                        color: "white",
+                      }}
+                    >
+                      <Typography variant="h6" component="h6">
+                        {section.title}
+                      </Typography>
+                    </RouterLink>
+                  ))}
+              </Box>
+
+              {/* User account related*/}
+
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <IconButton
+                  size="medium"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+              <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                <IconButton
+                  size="medium"
+                  aria-label="show more"
+                  aria-haspopup="true"
+                  color="inherit"
+                  onClick={handleMobileMenuOpen}
+                >
+                  <MoreIcon />
+                </IconButton>
+              </Box>
+            </>
+          )}
+
+          {!user && (
+            <>
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <RouterLink
-                  key={section.title}
-                  to={section.url}
+                  key={"SignIn"}
+                  to={"/login"}
                   style={{
                     padding: "1rem",
                     flexShrink: "0",
@@ -198,41 +262,20 @@ const Header = () => {
                   }}
                 >
                   <Typography variant="h6" component="h6">
-                    {section.title}
+                    {"Sign In"}
                   </Typography>
                 </RouterLink>
-              ))}
-          </Box>
-
-          {/* User account related*/}
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="medium"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="medium"
-              aria-label="show more"
-              aria-haspopup="true"
-              color="inherit"
-              onClick={handleMobileMenuOpen}
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+              </Box>
+            </>
+          )}
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      {user && (
+        <>
+          {renderMobileMenu}
+          {renderMenu}
+        </>
+      )}
     </Box>
   );
 };

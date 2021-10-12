@@ -1,6 +1,7 @@
 import { Route, Switch } from "react-router-dom";
 import Home from "../pages/Home";
 import Board from "../pages/Board.js";
+import SignIn from "../pages/SignIn.js";
 // import WriteStory from "../pages/WriteStory.js";
 
 const Main = (props) => {
@@ -8,6 +9,7 @@ const Main = (props) => {
     <Switch>
       <Route exact path="/" component={Home} />
       <Route exact path="/boards/:boardId" component={Board} />
+      <Route exact path="/login" component={SignIn} />
       {/* <Route exact path="/writestory" component={WriteStory} /> */}
     </Switch>
   );

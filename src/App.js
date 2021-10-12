@@ -1,10 +1,12 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "./App.css";
+import { React, useState } from "react";
 import Main from "./components/Main.js";
-import HomeHeader from "./components/Header";
+import Header from "./components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import Footer from "./components/Footer";
+import { UserContext } from "./UserContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,14 +19,20 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
 
+  const [user, setUser] = useState(
+    JSON.parse(localStorage?.getItem("userObj"))?.profileObj
+  );
+
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <Router>
-        <HomeHeader />
-        <Main />
-        <Footer />
-      </Router>
+      <UserContext.Provider value={{ user, setUser }}>
+        <CssBaseline />
+        <Router>
+          <Header />
+          <Main />
+          <Footer />
+        </Router>
+      </UserContext.Provider>
     </div>
   );
 }
