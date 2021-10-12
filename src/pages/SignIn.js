@@ -18,8 +18,7 @@ export default function SignIn() {
   const { user, setUser } = useContext(UserContext);
   const history = useHistory();
 
-  const onSuccess = (res) => {
-    // console.log(res);
+  const onSuccess = async (res) => {
     // console.log("Login Success: currentUser:", res.profileObj);
     setUser(res.profileObj);
     localStorage.setItem(
@@ -30,6 +29,25 @@ export default function SignIn() {
       })
     );
 
+    try {
+      const resp = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+        body: JSON.stringify({
+          email: res.profileObj.email,
+          name: res.profileObj.name,
+          imageUrl: res.profileObj.imageUrl,
+        }),
+      });
+      if (!resp.ok) {
+        throw new Error("Error in posting user auth data to backend");
+      }
+    } catch (err) {
+      console.log(err);
+    }
     // refreshTokenSetup(res);
     history.push("/");
   };
