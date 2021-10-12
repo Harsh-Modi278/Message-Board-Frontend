@@ -1,9 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, styled } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@mui/material/Divider";
-import Paper from "@mui/material/Paper";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
