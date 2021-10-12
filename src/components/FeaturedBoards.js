@@ -17,29 +17,30 @@ const useStyles = makeStyles((theme) => ({
 
 const FeaturedBoards = (props) => {
   const classes = useStyles();
+  const { sort } = props;
 
   //GET all articles for Home page
   let {
     data: featuredBoards,
     isPending,
     error,
-  } = useFetch(`http://localhost:5000/api/boards/`);
+  } = useFetch(`http://localhost:5000/api/boards/` + (sort && `?sort=${sort}`));
+
+  console.log(`http://localhost:5000/api/boards/` + (sort && `?sort=${sort}`));
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="lg">
-        {error && <div>{error}</div>}
-        {isPending && <div>Loading...</div>}
-        <main>
-          <Grid container spacing={4} direction="row">
-            {featuredBoards &&
-              featuredBoards.map((post) => (
-                <FeaturedBoard key={post.board_id} post={post} />
-              ))}
-          </Grid>
-        </main>
-      </Container>
+      {error && <div>{error}</div>}
+      {isPending && <div>Loading...</div>}
+      <main style={{ paddingTop: "1rem" }}>
+        <Grid container spacing={4} direction="row">
+          {featuredBoards &&
+            featuredBoards.map((post) => (
+              <FeaturedBoard key={post.board_id} post={post} />
+            ))}
+        </Grid>
+      </main>
     </React.Fragment>
   );
 };

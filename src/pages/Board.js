@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import useFetch from "../hooks/useFetch.js";
@@ -10,6 +10,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
+
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +52,12 @@ const Board = (props) => {
 
   const { boardId } = props.match.params;
 
+  const [sort, setSort] = useState("best");
+
+  const handleChange = (e) => {
+    setSort(e.target.value);
+  };
+
   // request for board details from server using board id
   let {
     data: board,
@@ -58,7 +70,10 @@ const Board = (props) => {
     data: boardComments,
     isPendingBoardComments,
     errorBoardComments,
-  } = useFetch(`http://localhost:5000/api/boards/${boardId}/comments`);
+  } = useFetch(
+    `http://localhost:5000/api/boards/${boardId}/comments/` +
+      (sort && `?sort=${sort}`)
+  );
 
   return (
     <div className={classes.root}>
@@ -99,9 +114,25 @@ const Board = (props) => {
           </ListItem>
         </List>
         <br />
-        <Typography variant="h6" className={classes.title}>
-          Top comments
-        </Typography>
+
+        <Box sx={{ minWidth: 50 }}>
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={sort}
+              label="Sort By"
+              onChange={handleChange}
+            >
+              <MenuItem value={"best"}>best</MenuItem>
+              <MenuItem value={"new"}>new</MenuItem>
+              <MenuItem value={"old"}>old</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <br />
         <Divider />
         <Comments comments={boardComments || []} />
       </div>
