@@ -2,7 +2,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import "./App.css";
 import Main from "./components/Main.js";
+import HomeHeader from "./components/Header";
 import { makeStyles } from "@material-ui/core/styles";
+import Footer from "./components/Footer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +21,9 @@ function App() {
     <div className={classes.root}>
       <CssBaseline />
       <Router>
+        <HomeHeader />
         <Main />
+        <Footer />
       </Router>
     </div>
   );
