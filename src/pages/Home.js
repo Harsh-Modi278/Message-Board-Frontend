@@ -2,8 +2,6 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container } from "@material-ui/core";
 import FeaturedBoards from "../components/FeaturedBoards";
-import HomeHeader from "../components/HomeHeader";
-import Footer from "../components/Footer";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -42,12 +40,10 @@ const Home = (props) => {
 
   return (
     <React.Fragment>
-      <HomeHeader drawerWidth={0} />
       <div className={classes.heroContent}>
         <Container maxWidth="lg">
           <FeaturedBoards />
         </Container>
-        <Footer />
       </div>
     </React.Fragment>
   );

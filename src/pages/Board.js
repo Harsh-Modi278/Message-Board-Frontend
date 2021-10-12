@@ -1,14 +1,9 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import { makeStyles, useTheme, styled } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import { Toolbar } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
 import useFetch from "../hooks/useFetch.js";
 import Comments from "../components/Comments.js";
-import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
-import Paper from "@mui/material/Paper";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -46,13 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
-
 const Board = (props) => {
   const classes = useStyles();
 
@@ -74,30 +62,13 @@ const Board = (props) => {
 
   return (
     <div className={classes.root}>
-      <div>
-        <AppBar position="fixed">
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-                Message Board{" "}
-              </Link>
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </div>
-
       {errorBoard && <div>{errorBoard}</div>}
       {errorBoardComments && <div>{errorBoardComments}</div>}
 
       {(isPendingBoard || isPendingBoardComments) && <div>Loading...</div>}
 
-      <div style={{ marginTop: "5rem", padding: "2rem" }}>
-        <Typography
-          variant="h6"
-          component="h6"
-          align="flex-start"
-          color="primary"
-        >
+      <div style={{ padding: "2rem" }}>
+        <Typography variant="h6" component="h6" align="left" color="primary">
           <a
             href={`/boards/${boardId}`}
             style={{
