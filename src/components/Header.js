@@ -72,7 +72,10 @@ const Header = () => {
   };
 
   const handleMenuClose = () => {
+    // upon close event close menu
     setAnchorEl(null);
+
+    // also close mobile menu
     handleMobileMenuClose();
   };
 
@@ -176,7 +179,10 @@ const Header = () => {
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
+          {/* To separate items to left and right side */}
           <Box sx={{ flexGrow: 1 }} />
+
+          {/* Sections */}
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {sections !== undefined &&
               sections.length > 0 &&
@@ -198,6 +204,7 @@ const Header = () => {
               ))}
           </Box>
 
+          {/* User account related*/}
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
               size="medium"
