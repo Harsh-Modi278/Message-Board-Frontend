@@ -1,6 +1,5 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Divider from "@mui/material/Divider";
 
 import List from "@mui/material/List";
@@ -8,41 +7,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
-
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
-  cardGrid: {
-    paddingTop: theme.spacing(10),
-    paddingBottom: theme.spacing(8),
-  },
-  card: {
-    // height: "140%",
-    // width: "120%",
-  },
-  cardMedia: {
-    paddingTop: "56.25%", // 16:9
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
-  },
-}));
+import { getTimeDiff } from "../utils/functions";
 
 const Comments = (props) => {
   const { comments } = props;
-  const classes = useStyles();
   return (
     <>
       <br />
@@ -62,13 +30,22 @@ const Comments = (props) => {
               <ListItem alignItems="center">
                 <ListItemAvatar>
                   <Avatar
-                    alt="Remy Sharp"
-                    src="https://www.shutterstock.com/image-vector/man-member-avatar-icon-vector-1395952562"
+                    alt={currComment.username}
+                    src={currComment.imageurl}
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={<strong>User Id: {currComment.user_id}</strong>}
-                  secondary={" - " + currComment["comment"]}
+                  primary={
+                    <>
+                      <Typography variant="h5" component="span">
+                        <strong>{currComment.username}</strong>
+                      </Typography>
+                      <Typography variant="subtitle2" component="span">
+                        {`  | submitted ${getTimeDiff(currComment.time)}`}
+                      </Typography>
+                    </>
+                  }
+                  secondary={currComment["comment"]}
                 />
               </ListItem>
               <Divider variant="inset" component="li" />
