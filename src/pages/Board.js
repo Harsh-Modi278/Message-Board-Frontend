@@ -163,7 +163,7 @@ const Board = (props) => {
             <ListItemText
               primary={
                 <>
-                  <Typography variant="h5" component="span">
+                  <Typography variant="h5" component="span" color="primary">
                     <strong>
                       {(board && board[0]?.username) || "John Doe"}
                     </strong>

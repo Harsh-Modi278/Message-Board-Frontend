@@ -7,6 +7,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { Link } from "react-router-dom";
 import routes from "../constants/route.json";
+import { getTimeDiff } from "../utils/functions";
 
 const useStyles = makeStyles({
   card: {
@@ -33,15 +34,28 @@ const FeaturedBoard = (props) => {
         <Card className={classes.card}>
           <div className={classes.cardDetails}>
             <CardContent>
-              <Typography component="h2" variant="h5">
+              <Typography component="div" variant="h4" color="primary">
                 {post.board_name}
               </Typography>
-              <Typography variant="subtitle1" paragraph>
+              <Typography
+                variant="bottom text"
+                component="span"
+                color="secondary"
+              >
+                {`${post.upvotes} upvote ${post.upvotes > 1 ? "s" : ""} | ${
+                  post.comments_count
+                } comment${
+                  post.comments_count > 1 ? "s" : ""
+                } | submitted ${getTimeDiff(post.time_created)}`}
+              </Typography>
+              <br />
+              <br />
+              <Typography variant="subtitle1" paragraph component="p">
                 {post.preview &&
                   post.preview.slice(0, 100) +
                     (post.preview.length > 100 ? `...` : "")}
               </Typography>
-              <Typography variant="subtitle1" color="primary">
+              <Typography variant="subtitle1" color="primary" component="em">
                 Continue reading...
               </Typography>
             </CardContent>

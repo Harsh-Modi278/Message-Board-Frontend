@@ -37,7 +37,11 @@ const Comments = (props) => {
                 <ListItemText
                   primary={
                     <>
-                      <Typography variant="h5" component="span">
+                      <Typography
+                        variant="h5"
+                        component="span"
+                        color="secondary"
+                      >
                         <strong>{currComment.username}</strong>
                       </Typography>
                       <Typography variant="subtitle2" component="span">
