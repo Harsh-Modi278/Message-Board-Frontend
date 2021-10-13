@@ -13,7 +13,6 @@ import Menu from "@mui/material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import LoginIcon from "@mui/icons-material/Login";
 import { UserContext } from "../UserContext";
 
 const Search = styled("div")(({ theme }) => ({
