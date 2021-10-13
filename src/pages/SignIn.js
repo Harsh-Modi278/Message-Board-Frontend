@@ -19,16 +19,6 @@ export default function SignIn() {
   const history = useHistory();
 
   const onSuccess = async (res) => {
-    // console.log("Login Success: currentUser:", res.profileObj);
-    setUser(res.profileObj);
-    localStorage.setItem(
-      "userObj",
-      JSON.stringify({
-        profileObj: res.profileObj,
-        accessToken: res.accessToken,
-      })
-    );
-
     try {
       const resp = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
@@ -45,6 +35,19 @@ export default function SignIn() {
       if (!resp.ok) {
         throw new Error("Error in posting user auth data to backend");
       }
+      const jsonRes = await resp.json();
+      const { user_id } = jsonRes;
+      let updatedUser = res.profileObj;
+      updatedUser.user_id = user_id;
+      console.log(updatedUser);
+      setUser(updatedUser);
+      localStorage.setItem(
+        "userObj",
+        JSON.stringify({
+          profileObj: updatedUser,
+          accessToken: res.accessToken,
+        })
+      );
     } catch (err) {
       console.log(err);
     }
