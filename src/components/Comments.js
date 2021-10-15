@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useContext } from "react";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@mui/material/Divider";
 
@@ -8,9 +8,22 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import { getTimeDiff } from "../utils/functions";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
+import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
+
+import ThumbUpOffAltRoundedIcon from "@mui/icons-material/ThumbUpOffAltRounded";
+import ThumbDownAltRoundedIcon from "@mui/icons-material/ThumbDownAltRounded";
+
+import { IconButton } from "@material-ui/core";
+
+import { UserContext } from "../UserContext";
+import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 
 const Comments = (props) => {
-  const { comments } = props;
+  const { user, setUser } = useContext(UserContext);
+  const { comments, handleCommentDelete } = props;
   return (
     <>
       <br />
@@ -26,34 +39,62 @@ const Comments = (props) => {
           aria-label="mailbox folders"
         >
           {comments.map((currComment) => (
-            <React.Fragment key={currComment.comment_id}>
-              <ListItem alignItems="center">
-                <ListItemAvatar>
-                  <Avatar
-                    alt={currComment.username}
-                    src={currComment.imageurl}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <>
-                      <Typography
-                        variant="h5"
-                        component="span"
-                        color="secondary"
-                      >
-                        <strong>{currComment.username}</strong>
-                      </Typography>
-                      <Typography variant="subtitle2" component="span">
-                        {`  | submitted ${getTimeDiff(currComment.time)}`}
-                      </Typography>
-                    </>
-                  }
-                  secondary={currComment["comment"]}
+            <div key={currComment.comment_id}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <Avatar
+                  alt={currComment.username}
+                  src={currComment.imageurl}
+                  sx={{ margin: 1 }}
                 />
+                <ListItem alignItems="center">
+                  <ListItemText
+                    primary={
+                      <>
+                        <Typography
+                          variant="h5"
+                          component="span"
+                          color="secondary"
+                        >
+                          <strong>{currComment.username}</strong>
+                        </Typography>
+                        <Typography variant="subtitle2" component="span">
+                          {`  | submitted ${getTimeDiff(currComment.time)}`}
+                        </Typography>
+                      </>
+                    }
+                    secondary={
+                      <ReactMarkdownWrapper body={currComment["comment"]} />
+                    }
+                  />
+                </ListItem>
+              </div>
+              <ListItem style={{ display: "flex", justifyContent: "flex-end" }}>
+                {user && user.user_id === currComment.user_id && (
+                  <IconButton
+                    onClick={(e) =>
+                      handleCommentDelete(e, currComment.comment_id)
+                    }
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+                <IconButton>
+                  <ThumbUpAltOutlinedIcon />
+                </IconButton>
+                <Typography variant="h6" component="span">
+                  {currComment.upvotes}
+                </Typography>
+                <IconButton>
+                  <ThumbDownAltOutlinedIcon />
+                </IconButton>
               </ListItem>
               <Divider variant="inset" component="li" />
-            </React.Fragment>
+            </div>
           ))}
         </List>
       )}

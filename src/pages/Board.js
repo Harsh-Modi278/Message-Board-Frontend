@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import useFetch from "../hooks/useFetch.js";
 import Comments from "../components/Comments.js";
 import Divider from "@mui/material/Divider";
+import { Link } from "react-router-dom";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -24,6 +25,19 @@ import IconButton from "@mui/material/IconButton";
 
 import { UserContext } from "../UserContext";
 import { getTimeDiff } from "../utils/functions";
+
+import ArrowCircleUpTwoToneIcon from "@mui/icons-material/ArrowCircleUpTwoTone";
+import ArrowCircleDownTwoToneIcon from "@mui/icons-material/ArrowCircleDownTwoTone";
+
+import ArrowCircleUpRoundedIcon from "@mui/icons-material/ArrowCircleUpRounded";
+import ArrowCircleDownRoundedIcon from "@mui/icons-material/ArrowCircleDownRounded";
+import { style } from "@mui/system";
+
+import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
+
+import Alert from "@mui/material/Alert";
+import Collapse from "@mui/material/Collapse";
+import CloseIcon from "@mui/icons-material/Close";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,6 +74,7 @@ const Board = (props) => {
   const { boardId } = props.match.params;
   const { user, setUser } = useContext(UserContext);
   const [sort, setSort] = useState("best");
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const [commentBody, setCommentBody] = useState("");
 
@@ -79,7 +94,6 @@ const Board = (props) => {
     `http://localhost:5000/api/boards/${boardId}/comments/` +
       (sort && `?sort=${sort}`)
   );
-  const len = boardComments ? boardComments.length : 0;
 
   const [commentsArray, setCommentsArray] = useState(boardComments);
 
@@ -93,6 +107,39 @@ const Board = (props) => {
 
   const handleCommentChange = (e) => {
     setCommentBody(e.target.value);
+  };
+
+  let alertStatus = "error";
+
+  const handleCommentDelete = async (e, comment_id) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/boards/${boardId}/comments/${comment_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "cors",
+          body: JSON.stringify({
+            user_id: user.user_id,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        alertStatus = "error";
+        setAlertOpen(true);
+        throw new Error("Error when deleting a comment");
+      } else {
+        const jsonRes = await res.json();
+        alertStatus = "success";
+        setAlertOpen(true);
+      }
+    } catch (err) {
+      alertStatus = "error";
+      setAlertOpen(true);
+    }
   };
 
   const handleSubmit = async () => {
@@ -126,115 +173,158 @@ const Board = (props) => {
   };
 
   return (
-    <div className={classes.root}>
-      {errorBoard && <div>{errorBoard}</div>}
-      {errorBoardComments && <div>{errorBoardComments}</div>}
-
-      {(isPendingBoard || isPendingBoardComments) && <div>Loading...</div>}
-
-      <div style={{ padding: "2rem" }}>
-        <Typography variant="h6" component="h6" align="left" color="primary">
-          <a
-            href={`/boards/${boardId}`}
-            style={{
-              color: "#0000ff",
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            <strong>Board Name:{board && board[0]?.board_name}</strong>
-          </a>
-        </Typography>
-        <List
-          sx={{
-            width: "auto",
-            bgcolor: "background.paper",
-          }}
-        >
-          <ListItem alignItems="center">
-            <ListItemAvatar>
-              <Avatar
-                alt={(board && board[0]?.username) || "X Y"}
-                src={board && board[0]?.imageurl}
-              />
-            </ListItemAvatar>
-
-            <br />
-            <ListItemText
-              primary={
-                <>
-                  <Typography variant="h5" component="span" color="primary">
-                    <strong>
-                      {(board && board[0]?.username) || "John Doe"}
-                    </strong>
-                  </Typography>
-                  <Typography variant="subtitle2" component="span">
-                    {`  | submitted ${getTimeDiff(
-                      board && board[0]?.time_created
-                    )}`}
-                  </Typography>
-                </>
-              }
-              secondary={board && board[0]?.board_description}
-            />
-          </ListItem>
-        </List>
-        <br />
-        <Divider />
-        <br />
-
-        {user && (
-          <>
-            <Box
-              sx={{
-                maxWidth: "100%",
-                display: "flex",
-                alignItems: "flex-end",
-                // position: "fixed",
+    <>
+      <Collapse in={alertOpen}>
+        <Alert
+          severity={alertStatus}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setAlertOpen(false);
               }}
             >
-              <ListItemAvatar>
-                <Avatar alt={user?.name || "John Does"} src={user?.imageUrl} />
-              </ListItemAvatar>
-              <TextField
-                fullWidth
-                multiline
-                label="Add a comment"
-                placeholder="Add a comment"
-                id="outlined-multiline-flexible"
-                maxRows={10}
-                value={commentBody}
-                onChange={handleCommentChange}
-              />
-              <IconButton size="40px" color="inherit" onClick={handleSubmit}>
-                <SendSharpIcon />
-              </IconButton>
-            </Box>
-            <br />
-            <Divider />
-          </>
-        )}
-        <br />
-        <Box sx={{ minWidth: 50 }}>
-          <FormControl>
-            <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          {alertStatus === "success"
+            ? "Comment successfully deleted, please refresh the page"
+            : "Error in deleting the comment, please try again!"}
+        </Alert>
+      </Collapse>
+      <div className={classes.root}>
+        {errorBoard && <div>{errorBoard}</div>}
+        {errorBoardComments && <div>{errorBoardComments}</div>}
 
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={sort}
-              label="Sort By"
-              onChange={handleDropDownChange}
+        {(isPendingBoard || isPendingBoardComments) && <div>Loading...</div>}
+
+        <div style={{ padding: "2rem", flexGrow: "1" }}>
+          <Box sx={{ display: "flex" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                paddingRight: "2rem",
+              }}
             >
-              <MenuItem value={"best"}>best</MenuItem>
-              <MenuItem value={"new"}>new</MenuItem>
-              <MenuItem value={"old"}>old</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Comments comments={commentsArray || []} />
+              <IconButton>
+                <ArrowCircleUpRoundedIcon style={{ fontSize: "150%" }} />
+              </IconButton>
+              <Typography
+                variant="h4"
+                component="div"
+                style={{ marginLeft: "1rem" }}
+              >
+                {board && board[0].upvotes}
+              </Typography>
+              <IconButton>
+                <ArrowCircleDownRoundedIcon style={{ fontSize: "150%" }} />
+              </IconButton>
+            </div>
+            {/* <Avatar
+            alt={(board && board[0]?.username) || "X Y"}
+            src={board && board[0]?.imageurl}
+            sx={{ marginTop: 3 }}
+          /> */}
+            <List style={{ flexGrow: 1 }}>
+              <ListItem>
+                <br />
+                <ListItemText
+                  primary={
+                    <>
+                      <Link
+                        to={`/boards/${boardId}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Typography variant="h5" component="h5" color="primary">
+                          <strong>{board && board[0]?.board_name}</strong>
+                        </Typography>
+                      </Link>
+                      <Typography variant="subtitle2" component="span">
+                        {`  submitted ${getTimeDiff(
+                          board && board[0]?.time_created
+                        )} by ${board && board[0]?.username}`}
+                      </Typography>
+                    </>
+                  }
+                  secondary={
+                    <ReactMarkdownWrapper
+                      body={board && board[0]?.board_description}
+                    />
+                  }
+                />
+              </ListItem>
+            </List>
+          </Box>
+
+          <br />
+          <Divider />
+          <br />
+
+          {user && (
+            <>
+              <Box
+                sx={{
+                  maxWidth: "100%",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  // position: "fixed",
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    alt={user?.name || "John Does"}
+                    src={user?.imageUrl}
+                  />
+                </ListItemAvatar>
+                <TextField
+                  fullWidth
+                  multiline
+                  label="Add a comment"
+                  placeholder="Add a comment"
+                  id="outlined-multiline-flexible"
+                  maxRows={10}
+                  value={commentBody}
+                  onChange={handleCommentChange}
+                />
+                <IconButton size="40px" color="inherit" onClick={handleSubmit}>
+                  <SendSharpIcon />
+                </IconButton>
+              </Box>
+              <br />
+              <Divider />
+            </>
+          )}
+          <br />
+          <Box sx={{ minWidth: 50 }}>
+            <FormControl>
+              <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
+
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={sort}
+                label="Sort By"
+                onChange={handleDropDownChange}
+              >
+                <MenuItem value={"best"}>best</MenuItem>
+                <MenuItem value={"new"}>new</MenuItem>
+                <MenuItem value={"old"}>old</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+          <Comments
+            comments={commentsArray || []}
+            handleCommentDelete={handleCommentDelete}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
