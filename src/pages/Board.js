@@ -46,6 +46,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import { Redirect, useHistory } from "react-router-dom";
 
+import {useAsync} from 'react-use';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -83,32 +85,55 @@ const Board = (props) => {
   const { filters, setFilters } = useContext(FilterContexts);
   const [alertOpen, setAlertOpen] = useState(false);
 
+  const [isBoardUpvoted, setIsBoardUpvoted] = useState(false);
+  const [isBoardDownvoted, setIsBoardDownvoted] = useState(false);
+
+  // const [isCommentUpvoted, setIsCommentUpvoted] = useState(false);
+  const [board, setBoard] = useState({});
+  
   const [commentBody, setCommentBody] = useState("");
-
+  
+  const [commentsArray, setCommentsArray] = useState([]);
+  
   const history = useHistory();
-
-  // request for board details from server using board id
-  let {
-    data: board,
-    isPendingBoard,
-    errorBoard,
-  } = useFetch(`http://localhost:5000/api/boards/${boardId}`);
-
-  // request for board comments from server using board id
-  let {
-    data: boardComments,
-    isPendingBoardComments,
-    errorBoardComments,
-  } = useFetch(
-    `http://localhost:5000/api/boards/${boardId}/comments/` +
-      (filters && `?sort=${filters.sortComments}`)
-  );
-
-  const [commentsArray, setCommentsArray] = useState(boardComments);
-
+  
   useEffect(() => {
-    setCommentsArray(boardComments);
-  }, [boardComments]);
+    // request for board comments from server using board id
+    fetch(
+      `http://localhost:5000/api/boards/${boardId}/comments/` +
+        (filters && `?sort=${filters.sortComments}`)
+    )
+      .then((res) => res.json())
+      .then((boardComments) => {
+        setCommentsArray(boardComments);
+      });
+
+    // request for board details from server using board id
+    fetch(`http://localhost:5000/api/boards/${boardId}`)
+      .then((res) => res.json())
+      .then((board) => {
+        setBoard(board);
+      });
+
+    // check if current board is upvoted by user or not
+    fetch(
+      `http://localhost:5000/api/boards/${boardId}/users/${user.user_id}/?operation=upvote`
+    )
+      .then((res) => res.json())
+      .then((boardUpvoted) => {
+        setIsBoardUpvoted(boardUpvoted?.done);
+      });
+
+    // check if current board is downvoted by user or not
+    fetch(
+      `http://localhost:5000/api/boards/${boardId}/users/${user.user_id}/?operation=downvote`
+    )
+      .then((res) => res.json())
+      .then((boardDownvoted) => {
+        setIsBoardDownvoted(boardDownvoted?.done);
+      });
+
+  },[]);
 
   const handleDropDownChange = (e) => {
     setFilters({ ...filters, sortComments: e.target.value });
@@ -216,6 +241,73 @@ const Board = (props) => {
     }
   };
 
+  const handleBoardDownvote = async (e) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/boards/${boardId}/downvote`,
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.user_id,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Unable to downvote the board.");
+      } else {
+        const jsonRes = await res.json();
+        if (jsonRes.upvotes !== 0) {
+          setIsBoardDownvoted(!isBoardDownvoted);
+        } else {
+          setIsBoardDownvoted(false);
+        }
+        setIsBoardUpvoted(false);
+        setBoard({ ...board, ...jsonRes });
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const handleBoardUpvote = async (e) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/boards/${boardId}/upvote`,
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.user_id,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Unable to upvote the board.");
+      } else {
+        const jsonRes = await res.json();
+        if (jsonRes.upvotes !== 0) {
+          setIsBoardUpvoted(!isBoardUpvoted);
+        } else {
+          setIsBoardUpvoted(false);
+        }
+        setIsBoardDownvoted(false);
+
+        setBoard({...board,...jsonRes});
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
     <>
       <Collapse in={alertOpen}>
@@ -239,11 +331,6 @@ const Board = (props) => {
         </Alert>
       </Collapse>
       <div className={classes.root}>
-        {errorBoard && <div>{errorBoard}</div>}
-        {errorBoardComments && <div>{errorBoardComments}</div>}
-
-        {(isPendingBoard || isPendingBoardComments) && <div>Loading...</div>}
-
         <div style={{ padding: "2rem", flexGrow: "1" }}>
           <Box sx={{ display: "flex" }}>
             <div
@@ -254,25 +341,28 @@ const Board = (props) => {
                 paddingRight: "2rem",
               }}
             >
-              <IconButton>
-                <ArrowCircleUpRoundedIcon style={{ fontSize: "150%" }} />
+              <IconButton onClick={handleBoardUpvote}>
+                {isBoardUpvoted ? (
+                  <ArrowCircleUpTwoToneIcon style={{ fontSize: "150%" }} />
+                ) : (
+                  <ArrowCircleUpRoundedIcon style={{ fontSize: "150%" }} />
+                )}
               </IconButton>
               <Typography
                 variant="h4"
                 component="div"
                 style={{ marginLeft: "1rem" }}
               >
-                {board && board[0].upvotes}
+                {board && board.upvotes}
               </Typography>
-              <IconButton>
-                <ArrowCircleDownRoundedIcon style={{ fontSize: "150%" }} />
+              <IconButton onClick={handleBoardDownvote}>
+                {isBoardDownvoted ? (
+                  <ArrowCircleDownTwoToneIcon style={{ fontSize: "150%" }}/>
+                ) : (
+                  <ArrowCircleDownRoundedIcon style={{ fontSize: "150%" }} />
+                )}
               </IconButton>
             </div>
-            {/* <Avatar
-            alt={(board && board[0]?.username) || "X Y"}
-            src={board && board[0]?.imageurl}
-            sx={{ marginTop: 3 }}
-          /> */}
             <List style={{ flexGrow: 1 }}>
               <ListItem>
                 <br />
@@ -284,19 +374,19 @@ const Board = (props) => {
                         style={{ textDecoration: "none" }}
                       >
                         <Typography variant="h5" component="h5" color="primary">
-                          <strong>{board && board[0]?.board_name}</strong>
+                          <strong>{board && board?.board_name}</strong>
                         </Typography>
                       </Link>
                       <Typography variant="subtitle2" component="span">
                         {`  submitted ${getTimeDiff(
-                          board && board[0]?.time_created
-                        )} by ${board && board[0]?.username}`}
+                          board && board?.time_created
+                        )} by ${board && board?.username}`}
                       </Typography>
                     </>
                   }
                   secondary={
                     <ReactMarkdownWrapper
-                      body={board && board[0]?.board_description}
+                      body={board && board?.board_description}
                     />
                   }
                 />
@@ -315,10 +405,10 @@ const Board = (props) => {
             <IconButton>
               <CommentIcon />
               <Typography variant="h6">
-                {boardComments ? boardComments.length : 0}
+                {commentsArray ? commentsArray.length : 0}
               </Typography>
             </IconButton>
-            {user.user_id === (board && board[0]?.user_id) && (
+            {user.user_id === (board && board?.user_id) && (
               <Button
                 variant="contained"
                 endIcon={<DeleteIcon />}
