@@ -3,7 +3,7 @@ import Home from "../pages/Home";
 import Board from "../pages/Board.js";
 import SignIn from "../pages/SignIn.js";
 import Contact from "../pages/Contact";
-// import WriteStory from "../pages/WriteStory.js";
+import NewBoard from "../pages/NewBoard.js";
 
 const Main = (props) => {
   return (
@@ -12,7 +12,7 @@ const Main = (props) => {
       <Route exact path="/boards/:boardId" component={Board} />
       <Route exact path="/login" component={SignIn} />
       <Route exact path="/contact" component={Contact} />
-      {/* <Route exact path="/writestory" component={WriteStory} /> */}
+      <Route exact path="/NewBoard" component={NewBoard} />
     </Switch>
   );
 };
