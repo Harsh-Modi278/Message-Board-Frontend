@@ -1,6 +1,6 @@
 import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
+import Stack from "@mui/material/Stack";
 import FeaturedBoard from "./FeaturedBoard";
 import useFetch from "../hooks/useFetch";
 
@@ -20,12 +20,12 @@ const FeaturedBoards = (props) => {
       {error && <div>{error}</div>}
       {isPending && <div>Loading...</div>}
       <main style={{ paddingTop: "1rem" }}>
-        <Grid container spacing={4} direction="row">
+        <Stack spacing={2} justifyContent="space-evenly">
           {featuredBoards &&
             featuredBoards.map((post) => (
               <FeaturedBoard key={post.board_id} post={post} />
             ))}
-        </Grid>
+        </Stack>
       </main>
     </React.Fragment>
   );
