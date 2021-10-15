@@ -42,7 +42,7 @@ const FeaturedBoard = (props) => {
               component="span"
               color="secondary"
             >
-              {`${post.upvotes} upvote ${post.upvotes > 1 ? "s" : ""} | ${
+              {`${post.upvotes} upvote${post.upvotes > 1 ? "s" : ""} | ${
                 post.comments_count
               } comment${
                 post.comments_count > 1 ? "s" : ""
