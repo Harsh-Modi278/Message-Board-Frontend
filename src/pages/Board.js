@@ -40,6 +40,12 @@ import Alert from "@mui/material/Alert";
 import Collapse from "@mui/material/Collapse";
 import CloseIcon from "@mui/icons-material/Close";
 
+import CommentIcon from "@mui/icons-material/Comment";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+import { Redirect, useHistory } from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -79,6 +85,8 @@ const Board = (props) => {
 
   const [commentBody, setCommentBody] = useState("");
 
+  const history = useHistory();
+
   // request for board details from server using board id
   let {
     data: board,
@@ -110,7 +118,8 @@ const Board = (props) => {
     setCommentBody(e.target.value);
   };
 
-  let alertStatus = "error";
+  let alertStatus = "error",
+    alertMsg = "Error in deleting the comment, please try again!";
 
   const handleCommentDelete = async (e, comment_id) => {
     try {
@@ -130,15 +139,18 @@ const Board = (props) => {
 
       if (!res.ok) {
         alertStatus = "error";
+        alertMsg = "Error in deleting the comment, please try again!";
         setAlertOpen(true);
         throw new Error("Error when deleting a comment");
       } else {
         const jsonRes = await res.json();
         alertStatus = "success";
+        alertMsg = "Comment successfully deleted, please refresh the page";
         setAlertOpen(true);
       }
     } catch (err) {
       alertStatus = "error";
+      alertMsg = "Error in deleting the comment, please try again!";
       setAlertOpen(true);
     }
   };
@@ -173,6 +185,37 @@ const Board = (props) => {
     }
   };
 
+  const handleBoardDelete = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:5000/api/boards", {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+          board_id: boardId,
+        }),
+      });
+
+      if (!res.ok) {
+        alertStatus = "error";
+        alertMsg = "Could not delete the post, please try again";
+        throw new Error(alertMsg);
+      } else {
+        const jsonRes = await res.json();
+        history.push("/");
+      }
+    } catch (err) {
+      console.log(err.message);
+      alertStatus = "error";
+      alertMsg = "Could not delete the post, please try again";
+      setAlertOpen(true);
+    }
+  };
+
   return (
     <>
       <Collapse in={alertOpen}>
@@ -192,9 +235,7 @@ const Board = (props) => {
           }
           sx={{ mb: 2 }}
         >
-          {alertStatus === "success"
-            ? "Comment successfully deleted, please refresh the page"
-            : "Error in deleting the comment, please try again!"}
+          {alertMsg}
         </Alert>
       </Collapse>
       <div className={classes.root}>
@@ -263,6 +304,31 @@ const Board = (props) => {
             </List>
           </Box>
 
+          <div
+            style={{
+              display: "flex",
+              flex: "1",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+            }}
+          >
+            <IconButton>
+              <CommentIcon />
+              <Typography variant="h6">
+                {boardComments ? boardComments.length : 0}
+              </Typography>
+            </IconButton>
+            {user.user_id === (board && board[0]?.user_id) && (
+              <Button
+                variant="contained"
+                endIcon={<DeleteIcon />}
+                color="error"
+                onClick={handleBoardDelete}
+              >
+                Delete
+              </Button>
+            )}
+          </div>
           <br />
           <Divider />
           <br />
