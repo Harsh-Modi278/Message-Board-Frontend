@@ -137,6 +137,12 @@ const Board = (props) => {
 
   const handleDropDownChange = (e) => {
     setFilters({ ...filters, sortComments: e.target.value });
+    fetch(
+      `http://localhost:5000/api/boards/${boardId}/comments/` + (filters && `?sort=${e.target.value}`)
+    ).then((res) => res.json())
+      .then((boardComments) => {
+        setCommentsArray(boardComments);
+      });
   };
 
   const handleCommentChange = (e) => {
@@ -163,15 +169,17 @@ const Board = (props) => {
       );
 
       if (!res.ok) {
-        alertStatus = "error";
-        alertMsg = "Error in deleting the comment, please try again!";
-        setAlertOpen(true);
         throw new Error("Error when deleting a comment");
       } else {
         const jsonRes = await res.json();
-        alertStatus = "success";
-        alertMsg = "Comment successfully deleted, please refresh the page";
-        setAlertOpen(true);
+        fetch(
+          `http://localhost:5000/api/boards/${boardId}/comments/` +
+            (filters && `?sort=${filters.sortComments}`)
+        )
+          .then((res) => res.json())
+          .then((boardComments) => {
+            setCommentsArray(boardComments);
+          });
       }
     } catch (err) {
       alertStatus = "error";
@@ -201,10 +209,16 @@ const Board = (props) => {
       }
       const jsonRes = await resp.json();
 
-      let updatedCommentsArray = Array.from(commentsArray);
-      updatedCommentsArray.push(jsonRes);
       setCommentBody("");
-      setCommentsArray(updatedCommentsArray);
+
+      fetch(
+        `http://localhost:5000/api/boards/${boardId}/comments/` +
+          (filters && `?sort=${filters.sortComments}`)
+      )
+        .then((res) => res.json())
+        .then((boardComments) => {
+          setCommentsArray(boardComments);
+        });
     } catch (err) {
       console.log(err);
     }
