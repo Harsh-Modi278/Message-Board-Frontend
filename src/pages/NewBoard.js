@@ -14,7 +14,7 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import { Redirect, useHistory } from "react-router-dom";
 
 const TabPanel = (props) => {

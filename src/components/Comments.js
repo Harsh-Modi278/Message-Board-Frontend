@@ -18,7 +18,7 @@ import ThumbDownAltRoundedIcon from "@mui/icons-material/ThumbDownAltRounded";
 
 import { IconButton } from "@material-ui/core";
 
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 
 const Comments = (props) => {

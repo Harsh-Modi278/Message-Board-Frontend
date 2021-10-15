@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import { GoogleLogin } from "react-google-login";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import { Redirect, useHistory } from "react-router-dom";
 // refresh token
 // import { refreshTokenSetup } from "../utils/refreshToken.js";

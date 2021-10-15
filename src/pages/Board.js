@@ -23,7 +23,7 @@ import TextField from "@mui/material/TextField";
 import SendSharpIcon from "@mui/icons-material/SendSharp";
 import IconButton from "@mui/material/IconButton";
 
-import { UserContext } from "../UserContext";
+import { UserContext } from "../contexts/UserContext";
 import { getTimeDiff } from "../utils/functions";
 
 import ArrowCircleUpTwoToneIcon from "@mui/icons-material/ArrowCircleUpTwoTone";
