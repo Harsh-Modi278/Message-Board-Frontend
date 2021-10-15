@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container } from "@material-ui/core";
 import FeaturedBoards from "../components/FeaturedBoards";
@@ -9,6 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
+
+import { FilterContexts } from "../contexts/FilterContexts";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -45,10 +47,10 @@ const useStyles = makeStyles((theme) => ({
 const Home = (props) => {
   const classes = useStyles();
 
-  const [sort, setSort] = useState("best");
+  const { filters, setFilters } = useContext(FilterContexts);
 
   const handleChange = (e) => {
-    setSort(e.target.value);
+    setFilters({ ...filters, sortBoards: e.target.value });
   };
 
   return (
@@ -68,7 +70,7 @@ const Home = (props) => {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={sort}
+              value={filters.sortBoards}
               label="Sort By"
               onChange={handleChange}
             >
@@ -80,7 +82,7 @@ const Home = (props) => {
           </FormControl>
         </Box>
         <Divider />
-        <FeaturedBoards sort={sort} />
+        <FeaturedBoards sort={filters.sortBoards} />
       </Container>
     </div>
   );

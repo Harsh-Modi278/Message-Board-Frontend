@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import Footer from "./components/Footer";
 import { UserContext } from "./contexts/UserContext";
+import { FilterContexts } from "./contexts/FilterContexts";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,15 +24,22 @@ function App() {
     JSON.parse(localStorage?.getItem("userObj"))?.profileObj
   );
 
+  const [filters, setFilters] = useState({
+    sortBoards: "best",
+    sortComments: "best",
+  });
+
   return (
     <div className={classes.root}>
       <UserContext.Provider value={{ user, setUser }}>
-        <CssBaseline />
-        <Router>
-          <Header />
-          <Main />
-          <Footer />
-        </Router>
+        <FilterContexts.Provider value={{ filters, setFilters }}>
+          <CssBaseline />
+          <Router>
+            <Header />
+            <Main />
+            <Footer />
+          </Router>
+        </FilterContexts.Provider>
       </UserContext.Provider>
     </div>
   );

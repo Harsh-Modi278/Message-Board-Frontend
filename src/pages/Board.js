@@ -24,6 +24,7 @@ import SendSharpIcon from "@mui/icons-material/SendSharp";
 import IconButton from "@mui/material/IconButton";
 
 import { UserContext } from "../contexts/UserContext";
+import { FilterContexts } from "../contexts/FilterContexts.js";
 import { getTimeDiff } from "../utils/functions";
 
 import ArrowCircleUpTwoToneIcon from "@mui/icons-material/ArrowCircleUpTwoTone";
@@ -73,7 +74,7 @@ const Board = (props) => {
   const classes = useStyles();
   const { boardId } = props.match.params;
   const { user, setUser } = useContext(UserContext);
-  const [sort, setSort] = useState("best");
+  const { filters, setFilters } = useContext(FilterContexts);
   const [alertOpen, setAlertOpen] = useState(false);
 
   const [commentBody, setCommentBody] = useState("");
@@ -92,7 +93,7 @@ const Board = (props) => {
     errorBoardComments,
   } = useFetch(
     `http://localhost:5000/api/boards/${boardId}/comments/` +
-      (sort && `?sort=${sort}`)
+      (filters && `?sort=${filters.sortComments}`)
   );
 
   const [commentsArray, setCommentsArray] = useState(boardComments);
@@ -102,7 +103,7 @@ const Board = (props) => {
   }, [boardComments]);
 
   const handleDropDownChange = (e) => {
-    setSort(e.target.value);
+    setFilters({ ...filters, sortComments: e.target.value });
   };
 
   const handleCommentChange = (e) => {
@@ -308,7 +309,7 @@ const Board = (props) => {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={sort}
+                value={filters.sortComments}
                 label="Sort By"
                 onChange={handleDropDownChange}
               >

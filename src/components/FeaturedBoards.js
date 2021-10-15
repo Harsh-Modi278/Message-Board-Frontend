@@ -15,7 +15,7 @@ const FeaturedBoards = (props) => {
   } = useFetch(`http://localhost:5000/api/boards/` + (sort && `?sort=${sort}`));
 
   return (
-    <React.Fragment>
+    <>
       <CssBaseline />
       {error && <div>{error}</div>}
       {isPending && <div>Loading...</div>}
@@ -27,7 +27,7 @@ const FeaturedBoards = (props) => {
             ))}
         </Stack>
       </main>
-    </React.Fragment>
+    </>
   );
 };
 
