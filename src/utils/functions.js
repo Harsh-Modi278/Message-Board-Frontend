@@ -8,6 +8,9 @@ export const getTimeDiff = (dt) => {
   const diffHours = Math.floor(diffTime / 3600) % 24;
   diffTime -= diffHours * 3600;
 
+  const diffMins = Math.floor(diffTime / 60) % 60;
+  diffTime -= diffMins * 60;
+
   let res = "";
   if (diffDays > 0) {
     res += `${diffDays}d `;
@@ -15,8 +18,9 @@ export const getTimeDiff = (dt) => {
   if (diffHours > 0) {
     res += `${diffHours}h `;
   }
-  if (res.length > 0) {
-    res += "ago";
+  if ((diffDays === 0 && diffHours === 0 && diffMins === 0) || diffMins > 0) {
+    res += `${diffMins}m `;
   }
+  res += "ago";
   return res;
 };
