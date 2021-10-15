@@ -6,7 +6,7 @@ import Main from "./components/Main.js";
 import Header from "./components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import Footer from "./components/Footer";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./contexts/UserContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {
