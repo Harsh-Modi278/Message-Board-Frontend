@@ -2,7 +2,7 @@
   "name": "message-board-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://harsh-modi278.github.io/Message-Board-Frontend/",
+  "homepage": "https://harsh-modi278.github.io/message-boards/",
   "dependencies": {
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
