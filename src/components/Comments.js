@@ -23,7 +23,13 @@ import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 
 const Comments = (props) => {
   const { user, setUser } = useContext(UserContext);
-  const { comments, handleCommentDelete } = props;
+  const {
+    comments,
+    handleCommentDelete,
+    handleCommentUpvote,
+    handleCommentDownvote,
+  } = props;
+
   return (
     <>
       <br />
@@ -83,13 +89,21 @@ const Comments = (props) => {
                     <DeleteIcon />
                   </IconButton>
                 )}
-                <IconButton>
+                <IconButton
+                  onClick={(e) => {
+                    handleCommentUpvote(e, currComment.comment_id);
+                  }}
+                >
                   <ThumbUpAltOutlinedIcon />
                 </IconButton>
                 <Typography variant="h6" component="span">
                   {currComment.upvotes}
                 </Typography>
-                <IconButton>
+                <IconButton
+                  onClick={(e) => {
+                    handleCommentDownvote(e, currComment.comment_id);
+                  }}
+                >
                   <ThumbDownAltOutlinedIcon />
                 </IconButton>
               </ListItem>

@@ -322,6 +322,74 @@ const Board = (props) => {
     }
   };
 
+  const handleCommentUpvote = async (e, commentId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/comments/${commentId}/upvote`,
+        {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.user_id,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Unable to upvote the comment.");
+      } else {
+        const jsonRes = await res.json();
+        let updatedCommentsArray = commentsArray;
+
+        updatedCommentsArray = updatedCommentsArray.map((item) => {
+          if (item.comment_id !== jsonRes.comment_id) return item;
+          item.upvotes = jsonRes.upvotes;
+          return item;
+        })
+
+        setCommentsArray(updatedCommentsArray);
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+    const handleCommentDownvote = async (e, commentId) => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/comments/${commentId}/downvote`,
+          {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: user.user_id,
+            }),
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error("Unable to downvote the comment.");
+        } else {
+          const jsonRes = await res.json();
+          let updatedCommentsArray = commentsArray;
+          updatedCommentsArray = updatedCommentsArray.map((item) => {
+            if (item.comment_id !== jsonRes.comment_id) return item;
+            item.upvotes = jsonRes.upvotes;
+            return item;
+          });
+          setCommentsArray(updatedCommentsArray);
+        }
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+
   return (
     <>
       <Collapse in={alertOpen}>
@@ -371,7 +439,7 @@ const Board = (props) => {
               </Typography>
               <IconButton onClick={handleBoardDownvote}>
                 {isBoardDownvoted ? (
-                  <ArrowCircleDownTwoToneIcon style={{ fontSize: "150%" }}/>
+                  <ArrowCircleDownTwoToneIcon style={{ fontSize: "150%" }} />
                 ) : (
                   <ArrowCircleDownRoundedIcon style={{ fontSize: "150%" }} />
                 )}
@@ -492,6 +560,8 @@ const Board = (props) => {
           <Comments
             comments={commentsArray || []}
             handleCommentDelete={handleCommentDelete}
+            handleCommentUpvote={handleCommentUpvote}
+            handleCommentDownvote={handleCommentDownvote}
           />
         </div>
       </div>
