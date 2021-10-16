@@ -10,9 +10,12 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { GoogleLogin } from "react-google-login";
 import { UserContext } from "../contexts/UserContext";
 import { Redirect, useHistory } from "react-router-dom";
+import { prefURL } from "../constants/backendURL";
 // refresh token
 // import { refreshTokenSetup } from "../utils/refreshToken.js";
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
+
 
 export default function SignIn() {
   const { user, setUser } = useContext(UserContext);
@@ -20,7 +23,7 @@ export default function SignIn() {
 
   const onSuccess = async (res) => {
     try {
-      const resp = await fetch("http://localhost:5000/api/auth/login", {
+      const resp = await fetch(`${prefURL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

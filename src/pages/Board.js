@@ -42,6 +42,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import  {useHistory } from "react-router-dom";
+import { prefURL } from "../constants/backendURL";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -96,7 +97,7 @@ const Board = (props) => {
   useEffect(() => {
     // request for board comments from server using board id
     fetch(
-      `http://localhost:5000/api/boards/${boardId}/comments/` +
+      `${prefURL}/api/boards/${boardId}/comments/` +
         (filters && `?sort=${filters.sortComments}`)
     )
       .then((res) => res.json())
@@ -105,7 +106,7 @@ const Board = (props) => {
       });
 
     // request for board details from server using board id
-    fetch(`http://localhost:5000/api/boards/${boardId}`)
+    fetch(`${prefURL}/api/boards/${boardId}`)
       .then((res) => res.json())
       .then((board) => {
         setBoard(board);
@@ -113,7 +114,7 @@ const Board = (props) => {
 
     // check if current board is upvoted by user or not
     fetch(
-      `http://localhost:5000/api/boards/${boardId}/users/${user.user_id}/?operation=upvote`
+      `${prefURL}/api/boards/${boardId}/users/${user.user_id}/?operation=upvote`
     )
       .then((res) => res.json())
       .then((boardUpvoted) => {
@@ -122,7 +123,7 @@ const Board = (props) => {
 
     // check if current board is downvoted by user or not
     fetch(
-      `http://localhost:5000/api/boards/${boardId}/users/${user.user_id}/?operation=downvote`
+      `${prefURL}/api/boards/${boardId}/users/${user.user_id}/?operation=downvote`
     )
       .then((res) => res.json())
       .then((boardDownvoted) => {
@@ -134,8 +135,10 @@ const Board = (props) => {
   const handleDropDownChange = (e) => {
     setFilters({ ...filters, sortComments: e.target.value });
     fetch(
-      `http://localhost:5000/api/boards/${boardId}/comments/` + (filters && `?sort=${e.target.value}`)
-    ).then((res) => res.json())
+      `${prefURL}/api/boards/${boardId}/comments/` +
+        (filters && `?sort=${e.target.value}`)
+    )
+      .then((res) => res.json())
       .then((boardComments) => {
         setCommentsArray(boardComments);
       });
@@ -151,7 +154,7 @@ const Board = (props) => {
   const handleCommentDelete = async (e, comment_id) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/boards/${boardId}/comments/${comment_id}`,
+        `${prefURL}/api/boards/${boardId}/comments/${comment_id}`,
         {
           method: "DELETE",
           headers: {
@@ -169,7 +172,7 @@ const Board = (props) => {
       } else {
         const jsonRes = await res.json();
         fetch(
-          `http://localhost:5000/api/boards/${boardId}/comments/` +
+          `${prefURL}/api/boards/${boardId}/comments/` +
             (filters && `?sort=${filters.sortComments}`)
         )
           .then((res) => res.json())
@@ -186,20 +189,17 @@ const Board = (props) => {
 
   const handleSubmit = async () => {
     try {
-      const resp = await fetch(
-        `http://localhost:5000/api/boards/${boardId}/comments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "cors",
-          body: JSON.stringify({
-            user_id: user.user_id,
-            comment: commentBody,
-          }),
-        }
-      );
+      const resp = await fetch(`${prefURL}/api/boards/${boardId}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+        body: JSON.stringify({
+          user_id: user.user_id,
+          comment: commentBody,
+        }),
+      });
       if (!resp.ok) {
         throw new Error("Error in posting user auth data to backend");
       }
@@ -208,7 +208,7 @@ const Board = (props) => {
       setCommentBody("");
 
       fetch(
-        `http://localhost:5000/api/boards/${boardId}/comments/` +
+        `${prefURL}/api/boards/${boardId}/comments/` +
           (filters && `?sort=${filters.sortComments}`)
       )
         .then((res) => res.json())
@@ -223,7 +223,7 @@ const Board = (props) => {
   const handleBoardDelete = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/boards", {
+      const res = await fetch(`${prefURL}/api/boards`, {
         method: "DELETE",
         mode: "cors",
         headers: {
@@ -253,19 +253,16 @@ const Board = (props) => {
 
   const handleBoardDownvote = async (e) => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/boards/${boardId}/downvote`,
-        {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-          }),
-        }
-      );
+      const res = await fetch(`${prefURL}/api/boards/${boardId}/downvote`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("Unable to downvote the board.");
@@ -286,19 +283,16 @@ const Board = (props) => {
 
   const handleBoardUpvote = async (e) => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/boards/${boardId}/upvote`,
-        {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-          }),
-        }
-      );
+      const res = await fetch(`${prefURL}/api/boards/${boardId}/upvote`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("Unable to upvote the board.");
@@ -320,19 +314,16 @@ const Board = (props) => {
 
   const handleCommentUpvote = async (e, commentId) => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/comments/${commentId}/upvote`,
-        {
-          method: "POST",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user.user_id,
-          }),
-        }
-      );
+      const res = await fetch(`${prefURL}/api/comments/${commentId}/upvote`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("Unable to upvote the comment.");
@@ -356,7 +347,7 @@ const Board = (props) => {
     const handleCommentDownvote = async (e, commentId) => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/comments/${commentId}/downvote`,
+          `${prefURL}/api/comments/${commentId}/downvote`,
           {
             method: "POST",
             mode: "cors",

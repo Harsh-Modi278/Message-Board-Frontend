@@ -3,6 +3,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Stack from "@mui/material/Stack";
 import FeaturedBoard from "./FeaturedBoard";
 import useFetch from "../hooks/useFetch";
+import {prefURL} from "../constants/backendURL"
 
 const FeaturedBoards = (props) => {
   const { sort } = props;
@@ -12,7 +13,7 @@ const FeaturedBoards = (props) => {
     data: featuredBoards,
     isPending,
     error,
-  } = useFetch(`http://localhost:5000/api/boards/` + (sort && `?sort=${sort}`));
+  } = useFetch(`${prefURL}/api/boards/` + (sort && `?sort=${sort}`));
 
   return (
     <>

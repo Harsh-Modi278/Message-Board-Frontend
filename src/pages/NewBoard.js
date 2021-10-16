@@ -16,6 +16,8 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { UserContext } from "../contexts/UserContext";
 import { Redirect, useHistory } from "react-router-dom";
+import { prefURL } from "../constants/backendURL";
+
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -62,7 +64,7 @@ const NewBoard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/boards", {
+      const res = await fetch(`${prefURL}/api/boards`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
