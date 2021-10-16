@@ -5,7 +5,6 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import { getTimeDiff } from "../utils/functions";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,8 +12,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
 import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
 
-import ThumbUpOffAltRoundedIcon from "@mui/icons-material/ThumbUpOffAltRounded";
-import ThumbDownAltRoundedIcon from "@mui/icons-material/ThumbDownAltRounded";
 
 import { IconButton } from "@material-ui/core";
 

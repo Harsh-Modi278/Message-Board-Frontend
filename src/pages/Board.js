@@ -1,7 +1,6 @@
 import { React, useContext, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import useFetch from "../hooks/useFetch.js";
 import Comments from "../components/Comments.js";
 import Divider from "@mui/material/Divider";
 import { Link } from "react-router-dom";
@@ -18,7 +17,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import TextField from "@mui/material/TextField";
 import SendSharpIcon from "@mui/icons-material/SendSharp";
 import IconButton from "@mui/material/IconButton";
@@ -32,7 +30,6 @@ import ArrowCircleDownTwoToneIcon from "@mui/icons-material/ArrowCircleDownTwoTo
 
 import ArrowCircleUpRoundedIcon from "@mui/icons-material/ArrowCircleUpRounded";
 import ArrowCircleDownRoundedIcon from "@mui/icons-material/ArrowCircleDownRounded";
-import { style } from "@mui/system";
 
 import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 
@@ -44,9 +41,8 @@ import CommentIcon from "@mui/icons-material/Comment";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { Redirect, useHistory } from "react-router-dom";
+import  {useHistory } from "react-router-dom";
 
-import {useAsync} from 'react-use';
 
 const useStyles = makeStyles((theme) => ({
   root: {
