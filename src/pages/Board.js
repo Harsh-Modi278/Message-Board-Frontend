@@ -477,7 +477,7 @@ const Board = (props) => {
                 {commentsArray ? commentsArray.length : 0}
               </Typography>
             </IconButton>
-            {user.user_id === (board && board?.user_id) && (
+            {(user && board && user.user_id === board.user_id) && (
               <Button
                 variant="contained"
                 endIcon={<DeleteIcon />}
