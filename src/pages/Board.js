@@ -152,6 +152,7 @@ const Board = (props) => {
     alertMsg = "Error in deleting the comment, please try again!";
 
   const handleCommentDelete = async (e, comment_id) => {
+    if (!user) return;
     try {
       const res = await fetch(
         `${prefURL}/api/boards/${boardId}/comments/${comment_id}`,
@@ -188,6 +189,7 @@ const Board = (props) => {
   };
 
   const handleSubmit = async () => {
+    if (!user) return;
     try {
       const resp = await fetch(`${prefURL}/api/boards/${boardId}/comments`, {
         method: "POST",
@@ -221,6 +223,7 @@ const Board = (props) => {
   };
 
   const handleBoardDelete = async (e) => {
+    if (!user) return;
     e.preventDefault();
     try {
       const res = await fetch(`${prefURL}/api/boards`, {
@@ -252,6 +255,7 @@ const Board = (props) => {
   };
 
   const handleBoardDownvote = async (e) => {
+    if (!user) return;
     try {
       const res = await fetch(`${prefURL}/api/boards/${boardId}/downvote`, {
         method: "POST",
@@ -282,6 +286,7 @@ const Board = (props) => {
   };
 
   const handleBoardUpvote = async (e) => {
+    if (!user) return;
     try {
       const res = await fetch(`${prefURL}/api/boards/${boardId}/upvote`, {
         method: "POST",
@@ -313,6 +318,7 @@ const Board = (props) => {
   };
 
   const handleCommentUpvote = async (e, commentId) => {
+    if (!user) return;
     try {
       const res = await fetch(`${prefURL}/api/comments/${commentId}/upvote`, {
         method: "POST",
@@ -345,6 +351,7 @@ const Board = (props) => {
   }
 
     const handleCommentDownvote = async (e, commentId) => {
+      if (!user) return;
       try {
         const res = await fetch(
           `${prefURL}/api/comments/${commentId}/downvote`,
