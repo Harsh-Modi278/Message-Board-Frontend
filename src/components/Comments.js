@@ -19,7 +19,7 @@ import { UserContext } from "../contexts/UserContext";
 import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 
 const Comments = (props) => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const {
     comments,
     handleCommentDelete,

@@ -40,7 +40,7 @@ const TabPanel = (props) => {
 };
 
 const NewBoard = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const history = useHistory();
 
   const [body, setBody] = useState("");
@@ -81,7 +81,7 @@ const NewBoard = () => {
         throw new Error("Error in posting a new board");
       }
 
-      const jsonRes = await res.json();
+      // const jsonRes = await res.json();
       history.push("/");
     } catch (err) {
       console.log(err);

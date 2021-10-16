@@ -1,4 +1,4 @@
-import { React, useContext } from "react";
+import { React } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Stack from "@mui/material/Stack";
 import FeaturedBoard from "./FeaturedBoard";

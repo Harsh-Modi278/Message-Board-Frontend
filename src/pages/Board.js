@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 const Board = (props) => {
   const classes = useStyles();
   const { boardId } = props.match.params;
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const { filters, setFilters } = useContext(FilterContexts);
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -170,7 +170,7 @@ const Board = (props) => {
       if (!res.ok) {
         throw new Error("Error when deleting a comment");
       } else {
-        const jsonRes = await res.json();
+        // const jsonRes = await res.json();
         fetch(
           `${prefURL}/api/boards/${boardId}/comments/` +
             (filters && `?sort=${filters.sortComments}`)
@@ -203,7 +203,7 @@ const Board = (props) => {
       if (!resp.ok) {
         throw new Error("Error in posting user auth data to backend");
       }
-      const jsonRes = await resp.json();
+      // const jsonRes = await resp.json();
 
       setCommentBody("");
 
@@ -240,7 +240,7 @@ const Board = (props) => {
         alertMsg = "Could not delete the post, please try again";
         throw new Error(alertMsg);
       } else {
-        const jsonRes = await res.json();
+        // const jsonRes = await res.json();
         history.push("/");
       }
     } catch (err) {

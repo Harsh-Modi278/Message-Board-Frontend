@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 //custome hook to GET data from the backend
 const useFetch = (url) => {
