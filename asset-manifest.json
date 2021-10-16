@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/Message-Board-Frontend/static/css/main.0545e21b.chunk.css",
-    "main.js": "/Message-Board-Frontend/static/js/main.4fa2ea8e.chunk.js",
-    "main.js.map": "/Message-Board-Frontend/static/js/main.4fa2ea8e.chunk.js.map",
-    "runtime-main.js": "/Message-Board-Frontend/static/js/runtime-main.6a568b6a.js",
-    "runtime-main.js.map": "/Message-Board-Frontend/static/js/runtime-main.6a568b6a.js.map",
-    "static/js/2.6eb564f0.chunk.js": "/Message-Board-Frontend/static/js/2.6eb564f0.chunk.js",
-    "static/js/2.6eb564f0.chunk.js.map": "/Message-Board-Frontend/static/js/2.6eb564f0.chunk.js.map",
-    "index.html": "/Message-Board-Frontend/index.html",
-    "static/css/main.0545e21b.chunk.css.map": "/Message-Board-Frontend/static/css/main.0545e21b.chunk.css.map",
-    "static/js/2.6eb564f0.chunk.js.LICENSE.txt": "/Message-Board-Frontend/static/js/2.6eb564f0.chunk.js.LICENSE.txt"
+    "main.css": "/message-boards/static/css/main.0545e21b.chunk.css",
+    "main.js": "/message-boards/static/js/main.66863c9b.chunk.js",
+    "main.js.map": "/message-boards/static/js/main.66863c9b.chunk.js.map",
+    "runtime-main.js": "/message-boards/static/js/runtime-main.9ffe77ec.js",
+    "runtime-main.js.map": "/message-boards/static/js/runtime-main.9ffe77ec.js.map",
+    "static/js/2.6eb564f0.chunk.js": "/message-boards/static/js/2.6eb564f0.chunk.js",
+    "static/js/2.6eb564f0.chunk.js.map": "/message-boards/static/js/2.6eb564f0.chunk.js.map",
+    "index.html": "/message-boards/index.html",
+    "static/css/main.0545e21b.chunk.css.map": "/message-boards/static/css/main.0545e21b.chunk.css.map",
+    "static/js/2.6eb564f0.chunk.js.LICENSE.txt": "/message-boards/static/js/2.6eb564f0.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.6a568b6a.js",
+    "static/js/runtime-main.9ffe77ec.js",
     "static/js/2.6eb564f0.chunk.js",
     "static/css/main.0545e21b.chunk.css",
-    "static/js/main.4fa2ea8e.chunk.js"
+    "static/js/main.66863c9b.chunk.js"
   ]
 }
