@@ -69,7 +69,7 @@ const NewBoard = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "cors",
+        // mode: "cors",
         body: JSON.stringify({
           user_id: user.user_id,
           title: title,
