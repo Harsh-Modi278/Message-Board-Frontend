@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 const Board = (props) => {
   const classes = useStyles();
   const { boardId } = props.match.params;
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { filters, setFilters } = useContext(FilterContexts);
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -114,7 +114,7 @@ const Board = (props) => {
 
     // check if current board is upvoted by user or not
     fetch(
-      `${prefURL}/api/boards/${boardId}/users/${user.user_id}/?operation=upvote`
+      `${prefURL}/api/boards/${boardId}/users/${user?.user_id}/?operation=upvote`
     )
       .then((res) => res.json())
       .then((boardUpvoted) => {
@@ -123,7 +123,7 @@ const Board = (props) => {
 
     // check if current board is downvoted by user or not
     fetch(
-      `${prefURL}/api/boards/${boardId}/users/${user.user_id}/?operation=downvote`
+      `${prefURL}/api/boards/${boardId}/users/${user?.user_id}/?operation=downvote`
     )
       .then((res) => res.json())
       .then((boardDownvoted) => {
