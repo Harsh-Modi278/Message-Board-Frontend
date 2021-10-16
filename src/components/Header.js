@@ -200,7 +200,7 @@ const Header = () => {
               <strong>Message Board</strong>
             </Typography>
           </RouterLink>
-          <Search>
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -208,7 +208,7 @@ const Header = () => {
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
             />
-          </Search>
+          </Search> */}
           {/* To separate items to left and right side */}
           <Box sx={{ flexGrow: 1 }} />
 
