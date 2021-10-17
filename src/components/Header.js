@@ -205,6 +205,25 @@ const Header = () => {
 
           {!user && (
             <>
+              {/* Contact section */}
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                {[{ title: "Contact", url: "/contact" }].map((section) => (
+                  <RouterLink
+                    key={section.title}
+                    to={section.url}
+                    style={{
+                      padding: "1rem",
+                      flexShrink: "0",
+                      textDecoration: "none",
+                      color: "white",
+                    }}
+                  >
+                    <Typography variant="h6" component="h6">
+                      {section.title}
+                    </Typography>
+                  </RouterLink>
+                ))}
+              </Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <RouterLink
                   key={"SignIn"}
