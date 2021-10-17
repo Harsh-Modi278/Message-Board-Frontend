@@ -1,19 +1,16 @@
 import { React, useState, useContext } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { SECTIONS } from "../constants/homeHeaderConstants";
-import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { UserContext } from "../contexts/UserContext";
-
 
 const Header = () => {
   const sections = SECTIONS;
@@ -160,15 +157,7 @@ const Header = () => {
               <strong>Message Board</strong>
             </Typography>
           </RouterLink>
-          {/* <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search> */}
+
           {/* To separate items to left and right side */}
           <Box sx={{ flexGrow: 1 }} />
 

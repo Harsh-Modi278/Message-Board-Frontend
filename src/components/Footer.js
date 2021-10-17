@@ -7,7 +7,10 @@ function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="/">
+      <Link
+        color="inherit"
+        href="https://github.com/Harsh-Modi278/Message-Board-Frontend"
+      >
         Message Board
       </Link>{" "}
       {new Date().getFullYear()}

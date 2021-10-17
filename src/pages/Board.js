@@ -41,9 +41,8 @@ import CommentIcon from "@mui/icons-material/Comment";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import  {useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { prefURL } from "../constants/backendURL";
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,20 +79,24 @@ const Board = (props) => {
   const { boardId } = props.match.params;
   const { user, setUser } = useContext(UserContext);
   const { filters, setFilters } = useContext(FilterContexts);
+
+  // for alertt opening and closing when deleting or posting a comment to indicate user feedback
   const [alertOpen, setAlertOpen] = useState(false);
 
   const [isBoardUpvoted, setIsBoardUpvoted] = useState(false);
   const [isBoardDownvoted, setIsBoardDownvoted] = useState(false);
 
-  // const [isCommentUpvoted, setIsCommentUpvoted] = useState(false);
+  // board details
   const [board, setBoard] = useState({});
-  
+
+  // comment boady - form control element
   const [commentBody, setCommentBody] = useState("");
-  
+
+  // comments on the current board
   const [commentsArray, setCommentsArray] = useState([]);
-  
+
   const history = useHistory();
-  
+
   useEffect(() => {
     // request for board comments from server using board id
     fetch(
@@ -129,19 +132,22 @@ const Board = (props) => {
       .then((boardDownvoted) => {
         setIsBoardDownvoted(boardDownvoted?.done);
       });
-
-  },[]);
+  }, []);
 
   const handleDropDownChange = (e) => {
     setFilters({ ...filters, sortComments: e.target.value });
-    fetch(
-      `${prefURL}/api/boards/${boardId}/comments/` +
-        (filters && `?sort=${e.target.value}`)
-    )
-      .then((res) => res.json())
-      .then((boardComments) => {
-        setCommentsArray(boardComments);
-      });
+    let updatedCommentsArray = commentsArray;
+    updatedCommentsArray.sort((comment1, comment2) => {
+      if (e.target.value === "best") {
+        return parseInt(comment2["upvotes"]) - parseInt(comment1["upvotes"]);
+      } else if (e.target.value === "new") {
+        return new Date(comment2["time"]) - new Date(comment1["time"]);
+      }
+      // 'old'
+      return new Date(comment1["time"]) - new Date(comment2["time"]);
+    });
+
+    setCommentsArray(updatedCommentsArray);
   };
 
   const handleCommentChange = (e) => {
@@ -172,14 +178,12 @@ const Board = (props) => {
         throw new Error("Error when deleting a comment");
       } else {
         // const jsonRes = await res.json();
-        fetch(
-          `${prefURL}/api/boards/${boardId}/comments/` +
-            (filters && `?sort=${filters.sortComments}`)
-        )
-          .then((res) => res.json())
-          .then((boardComments) => {
-            setCommentsArray(boardComments);
-          });
+        let updatedCommentsArray = commentsArray;
+        updatedCommentsArray = updatedCommentsArray.filter((commentItem) => {
+          return commentItem.comment_id !== comment_id;
+        });
+
+        setCommentsArray(updatedCommentsArray);
       }
     } catch (err) {
       alertStatus = "error";
@@ -203,20 +207,24 @@ const Board = (props) => {
         }),
       });
       if (!resp.ok) {
-        throw new Error("Error in posting user auth data to backend");
+        throw new Error("Error in sending new comment payload to backend");
       }
-      // const jsonRes = await resp.json();
+      const jsonRes = await resp.json();
+
+      let updatedCommentsArray = Array.from(jsonRes);
+
+      updatedCommentsArray.sort((comment1, comment2) => {
+        if (filters.sortComments === "best") {
+          return parseInt(comment2["upvotes"]) - parseInt(comment1["upvotes"]);
+        } else if (filters.sortComments === "new") {
+          return new Date(comment2["time"]) - new Date(comment1["time"]);
+        }
+        // 'old'
+        return new Date(comment1["time"]) - new Date(comment2["time"]);
+      });
 
       setCommentBody("");
-
-      fetch(
-        `${prefURL}/api/boards/${boardId}/comments/` +
-          (filters && `?sort=${filters.sortComments}`)
-      )
-        .then((res) => res.json())
-        .then((boardComments) => {
-          setCommentsArray(boardComments);
-        });
+      setCommentsArray(updatedCommentsArray);
     } catch (err) {
       console.log(err);
     }
@@ -310,7 +318,7 @@ const Board = (props) => {
         }
         setIsBoardDownvoted(false);
 
-        setBoard({...board,...jsonRes});
+        setBoard({ ...board, ...jsonRes });
       }
     } catch (err) {
       console.log(err.message);
@@ -341,48 +349,45 @@ const Board = (props) => {
           if (item.comment_id !== jsonRes.comment_id) return item;
           item.upvotes = jsonRes.upvotes;
           return item;
-        })
+        });
 
         setCommentsArray(updatedCommentsArray);
       }
     } catch (err) {
       console.log(err.message);
     }
-  }
+  };
 
-    const handleCommentDownvote = async (e, commentId) => {
-      if (!user) return;
-      try {
-        const res = await fetch(
-          `${prefURL}/api/comments/${commentId}/downvote`,
-          {
-            method: "POST",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              user_id: user.user_id,
-            }),
-          }
-        );
+  const handleCommentDownvote = async (e, commentId) => {
+    if (!user) return;
+    try {
+      const res = await fetch(`${prefURL}/api/comments/${commentId}/downvote`, {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+        }),
+      });
 
-        if (!res.ok) {
-          throw new Error("Unable to downvote the comment.");
-        } else {
-          const jsonRes = await res.json();
-          let updatedCommentsArray = commentsArray;
-          updatedCommentsArray = updatedCommentsArray.map((item) => {
-            if (item.comment_id !== jsonRes.comment_id) return item;
-            item.upvotes = jsonRes.upvotes;
-            return item;
-          });
-          setCommentsArray(updatedCommentsArray);
-        }
-      } catch (err) {
-        console.log(err.message);
+      if (!res.ok) {
+        throw new Error("Unable to downvote the comment.");
+      } else {
+        const jsonRes = await res.json();
+        let updatedCommentsArray = commentsArray;
+        updatedCommentsArray = updatedCommentsArray.map((item) => {
+          if (item.comment_id !== jsonRes.comment_id) return item;
+          item.upvotes = jsonRes.upvotes;
+          return item;
+        });
+        setCommentsArray(updatedCommentsArray);
       }
-    };
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <>
@@ -484,7 +489,7 @@ const Board = (props) => {
                 {commentsArray ? commentsArray.length : 0}
               </Typography>
             </IconButton>
-            {(user && board && user.user_id === board.user_id) && (
+            {user && board && user.user_id === board.user_id && (
               <Button
                 variant="contained"
                 endIcon={<DeleteIcon />}

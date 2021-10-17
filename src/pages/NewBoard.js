@@ -18,7 +18,6 @@ import { UserContext } from "../contexts/UserContext";
 import { Redirect, useHistory } from "react-router-dom";
 import { prefURL } from "../constants/backendURL";
 
-
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 
@@ -68,9 +67,9 @@ const NewBoard = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin":"*"
+          "Access-Control-Allow-Origin": "*",
         },
-        // mode: "cors",
+        mode: "cors",
         body: JSON.stringify({
           user_id: user.user_id,
           title: title,
