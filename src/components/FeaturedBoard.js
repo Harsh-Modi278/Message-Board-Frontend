@@ -50,13 +50,7 @@ const FeaturedBoard = (props) => {
             </Typography>
             <br />
             <Typography variant="subtitle1" paragraph component="p">
-              <ReactMarkdownWrapper
-                body={
-                  post.preview &&
-                  post.preview.slice(0, 400) +
-                    (post.preview.length > 400 ? `...` : "")
-                }
-              />
+              <ReactMarkdownWrapper body={post.preview} />
             </Typography>
             <Typography variant="subtitle1" color="primary" component="em">
               Continue reading...
