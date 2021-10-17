@@ -49,12 +49,12 @@ const FeaturedBoard = (props) => {
               } | submitted ${getTimeDiff(post.time_created)}`}
             </Typography>
             <br />
-            <Typography variant="subtitle1" paragraph component="p">
+            {/* <Typography variant="subtitle1" paragraph component="p">
               <ReactMarkdownWrapper body={post.preview} />
             </Typography>
             <Typography variant="subtitle1" color="primary" component="em">
               Continue reading...
-            </Typography>
+            </Typography> */}
           </CardContent>
         </div>
       </Card>
