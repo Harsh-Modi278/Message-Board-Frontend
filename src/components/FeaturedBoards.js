@@ -4,10 +4,7 @@ import Stack from "@mui/material/Stack";
 import FeaturedBoard from "./FeaturedBoard";
 import useFetch from "../hooks/useFetch";
 import { prefURL } from "../constants/backendURL";
-import {
-  PageNavigation,
-  Pagination as CustomPagination,
-} from "../utils/Pagination";
+import { Pagination as CustomPagination } from "../utils/Pagination";
 import Pagination from "@mui/material/Pagination";
 import Typography from "@mui/material/Typography";
 

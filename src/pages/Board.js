@@ -44,6 +44,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useHistory } from "react-router-dom";
 import { prefURL } from "../constants/backendURL";
 
+import InfiniteScroll from "react-infinite-scroll-component";
+import { Pagination as CustomPagination } from "../utils/Pagination";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -94,6 +97,15 @@ const Board = (props) => {
 
   // comments on the current board
   const [commentsArray, setCommentsArray] = useState([]);
+
+  // current page state for comments array
+  const [currentPage, setCurrentPage] = useState(1);
+
+  let commentsPages = new CustomPagination(commentsArray, 1);
+
+  const nextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
 
   const history = useHistory();
 
@@ -556,12 +568,30 @@ const Board = (props) => {
               </Select>
             </FormControl>
           </Box>
-          <Comments
-            comments={commentsArray || []}
-            handleCommentDelete={handleCommentDelete}
-            handleCommentUpvote={handleCommentUpvote}
-            handleCommentDownvote={handleCommentDownvote}
-          />
+          <InfiniteScroll
+            dataLength={commentsPages.getUptoPage(currentPage).length}
+            next={nextPage}
+            hasMore={currentPage <= commentsArray.length}
+            loader={<h4>Loading...</h4>}
+            endMessage={
+              <Typography
+                gutterBottom
+                variant="h6"
+                align="center"
+                color="primary"
+              >
+                Yay! You have seen it all
+              </Typography>
+            }
+          >
+            <Comments
+              comments={commentsPages.getUptoPage(currentPage) || []}
+              handleCommentDelete={handleCommentDelete}
+              handleCommentUpvote={handleCommentUpvote}
+              handleCommentDownvote={handleCommentDownvote}
+            />
+          </InfiniteScroll>
+          <div id="bottom-detector"></div>
         </div>
       </div>
     </>

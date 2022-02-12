@@ -9,6 +9,11 @@ export class Pagination {
     return this.data?.slice(offset, offset + this.pageSize);
   }
 
+  getUptoPage(n) {
+    const offset = (n - 1) * this.pageSize;
+    return this.data?.slice(0, offset + this.pageSize);
+  }
+
   getTotalPages() {
     return Math.floor(this?.data?.length / this?.pageSize) + 1;
   }
