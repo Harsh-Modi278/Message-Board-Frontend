@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 const Board = (props) => {
   const classes = useStyles();
   const { boardId } = props.match.params;
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const { filters, setFilters } = useContext(FilterContexts);
 
   // for alertt opening and closing when deleting or posting a comment to indicate user feedback
@@ -144,7 +144,7 @@ const Board = (props) => {
       .then((boardDownvoted) => {
         setIsBoardDownvoted(boardDownvoted?.done);
       });
-  }, []);
+  }, [boardId, filters, user?.user_id]);
 
   const handleDropDownChange = (e) => {
     setFilters({ ...filters, sortComments: e.target.value });

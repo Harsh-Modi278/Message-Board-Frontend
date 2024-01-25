@@ -1,1 +1,1 @@
-export const prefURL = "https://message-boards-backend.herokuapp.com";
+export const prefURL = "https://message-board-backend-qpteg8t3s-harsh-modi278.vercel.app";
