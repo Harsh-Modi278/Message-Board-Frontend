@@ -1,15 +1,24 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 import { Link } from "react-router-dom";
 import routes from "../constants/route.json";
-import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
+import { getTimeDiff } from "../utils/miscUtilities";
 
-import { getTimeDiff } from "../utils/functions";
+export interface Post {
+  boardId: string;
+  boardName: string;
+  upvotes: number;
+  commentsCount: number;
+  timeCreated: string;
+}
+interface FeaturedBoardProps {
+  post: Post;
+}
 
+// TO-DO: add separate styles.ts file for each component
 const useStyles = makeStyles({
   card: {
     display: "flex",
@@ -22,33 +31,29 @@ const useStyles = makeStyles({
   },
 });
 
-const FeaturedBoard = (props) => {
+export const FeaturedBoard: React.FC<FeaturedBoardProps> = ({ post }) => {
   const classes = useStyles();
-  const { post } = props;
 
   return (
     <Link
-      to={`${routes.BOARD}/${post.board_id}`}
+      to={`${routes.BOARD}/${post.boardId}`}
       style={{ textDecoration: "none" }}
     >
       <Card className={classes.card}>
         <div className={classes.cardDetails}>
           <CardContent>
             <Typography component="div" variant="h4" color="primary">
-              {post.board_name}
+              {post.boardName}
             </Typography>
-            <Typography
-              variant="bottom text"
-              component="span"
-              color="secondary"
-            >
+            <Typography variant="body2" component="span" color="secondary">
               {`${post.upvotes} upvote${post.upvotes > 1 ? "s" : ""} | ${
-                post.comments_count
+                post.commentsCount
               } comment${
-                post.comments_count > 1 ? "s" : ""
-              } | submitted ${getTimeDiff(post.time_created)}`}
+                post.commentsCount > 1 ? "s" : ""
+              } | submitted ${getTimeDiff(post.timeCreated)}`}
             </Typography>
             <br />
+            {/* Uncomment and modify the following lines as needed */}
             {/* <Typography variant="subtitle1" paragraph component="p">
               <ReactMarkdownWrapper body={post.preview} />
             </Typography>
@@ -61,9 +66,3 @@ const FeaturedBoard = (props) => {
     </Link>
   );
 };
-
-FeaturedBoard.propTypes = {
-  post: PropTypes.object,
-};
-
-export default FeaturedBoard;

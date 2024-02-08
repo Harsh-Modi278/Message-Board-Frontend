@@ -1,19 +1,17 @@
-import { React, useContext } from "react";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import { GoogleLogin } from "react-google-login";
-import { UserContext } from "../contexts/UserContext";
+import Typography from "@mui/material/Typography";
+import { useContext } from "react";
+// import { GoogleLogin } from "react-google-login";
 import { Redirect, useHistory } from "react-router-dom";
 import { prefURL } from "../constants/backendURL";
+import { UserContext } from "../contexts/UserContext";
 // refresh token
 // import { refreshTokenSetup } from "../utils/refreshToken.js";
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-
-
 
 export default function SignIn() {
   const { user, setUser } = useContext(UserContext);
@@ -80,14 +78,15 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in with Google
         </Typography>
-        <GoogleLogin
+        {/* {TO-DO: Add Google Login here.} */}
+        {/* <GoogleLogin
           clientId={clientId}
           buttonText="Sign In with Google"
           onSuccess={onSuccess}
           onFailure={onFailure}
           cookiePolicy={"single_host_origin"}
           style={{ marginTop: "100px" }}
-        />
+        /> */}
       </Box>
     </Container>
   );

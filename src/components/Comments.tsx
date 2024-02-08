@@ -1,31 +1,52 @@
-import { React, useContext } from "react";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@mui/material/Divider";
+import React, { useContext } from "react";
 
+import { IconButton } from "@material-ui/core";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
+import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
+import Avatar from "@mui/material/Avatar";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
-import { getTimeDiff } from "../utils/functions";
-import DeleteIcon from "@mui/icons-material/Delete";
 
-import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
-import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
-
-
-import { IconButton } from "@material-ui/core";
-
-import { UserContext } from "../contexts/UserContext";
 import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
+import { UserContext } from "../contexts/UserContext";
 
-const Comments = (props) => {
+export interface Comment {
+  commentId: string;
+  username: string;
+  imageurl: string;
+  time: string;
+  commentText: string;
+  upvotes: string;
+  userId: string;
+}
+
+interface CommentsProps {
+  comments: Comment[];
+  handleCommentDelete: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    commentId: string
+  ) => void;
+  handleCommentUpvote: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    commentId: string
+  ) => void;
+  handleCommentDownvote: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    commentId: string
+  ) => void;
+}
+
+const Comments: React.FC<CommentsProps> = ({
+  comments,
+  handleCommentDelete,
+  handleCommentUpvote,
+  handleCommentDownvote,
+}) => {
   const { user } = useContext(UserContext);
-  const {
-    comments,
-    handleCommentDelete,
-    handleCommentUpvote,
-    handleCommentDownvote,
-  } = props;
 
   return (
     <>
@@ -41,8 +62,8 @@ const Comments = (props) => {
           component="div"
           aria-label="mailbox folders"
         >
-          {comments.map((currComment) => (
-            <div key={currComment.comment_id}>
+          {comments.map((currComment: Comment) => (
+            <div key={currComment.commentId}>
               <div
                 style={{
                   display: "flex",
@@ -66,21 +87,21 @@ const Comments = (props) => {
                           <strong>{currComment.username}</strong>
                         </Typography>
                         <Typography variant="subtitle2" component="span">
-                          {`  | submitted ${getTimeDiff(currComment.time)}`}
+                          {`  | submitted ${currComment.time}`}
                         </Typography>
                       </>
                     }
                     secondary={
-                      <ReactMarkdownWrapper body={currComment["comment"]} />
+                      <ReactMarkdownWrapper body={currComment.commentText} />
                     }
                   />
                 </ListItem>
               </div>
               <ListItem style={{ display: "flex", justifyContent: "flex-end" }}>
-                {user && user.user_id === currComment.user_id && (
+                {user && user.userId === currComment.userId && (
                   <IconButton
                     onClick={(e) =>
-                      handleCommentDelete(e, currComment.comment_id)
+                      handleCommentDelete(e, currComment.commentId)
                     }
                   >
                     <DeleteIcon />
@@ -88,7 +109,7 @@ const Comments = (props) => {
                 )}
                 <IconButton
                   onClick={(e) => {
-                    handleCommentUpvote(e, currComment.comment_id);
+                    handleCommentUpvote(e, currComment.commentId);
                   }}
                 >
                   <ThumbUpAltOutlinedIcon />
@@ -98,7 +119,7 @@ const Comments = (props) => {
                 </Typography>
                 <IconButton
                   onClick={(e) => {
-                    handleCommentDownvote(e, currComment.comment_id);
+                    handleCommentDownvote(e, currComment.commentId);
                   }}
                 >
                   <ThumbDownAltOutlinedIcon />
