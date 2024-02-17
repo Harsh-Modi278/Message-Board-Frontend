@@ -1,33 +1,38 @@
-import { React, useState, useContext } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Collapse from "@mui/material/Collapse";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import IconButton from "@mui/material/IconButton";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 
-import { UserContext } from "../contexts/UserContext";
-import { Redirect, useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
 import { prefURL } from "../constants/backendURL";
+import { User } from "../redux/reducers/userSlice";
+import { RootState } from "../redux/store";
 
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props;
+interface TabPanelProps {
+  children?: React.ReactNode;
+  value: number;
+  index: number;
+}
 
+const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
   return (
     <div
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
@@ -38,29 +43,29 @@ const TabPanel = (props) => {
   );
 };
 
-const NewBoard = () => {
-  const { user } = useContext(UserContext);
-  const history = useHistory();
+const NewBoard: React.FC = () => {
+  const user: User | null = useSelector((state: RootState) => state.user.value);
+  const navigate = useNavigate();
 
-  const [body, setBody] = useState("");
-  const [title, setTitle] = useState("");
-  const [tabValue, setTabValue] = useState(0);
+  const [body, setBody] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [tabValue, setTabValue] = useState<number>(0);
 
-  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState<boolean>(false);
 
-  const handleBodyChange = (e) => {
+  const handleBodyChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setBody(e.target.value);
   };
 
-  const handleTitleChange = (e) => {
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
 
-  const handleTabChange = (e, newTabValue) => {
+  const handleTabChange = (e: any, newTabValue: number) => {
     setTabValue(newTabValue);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       const res = await fetch(`${prefURL}/api/boards`, {
@@ -71,7 +76,7 @@ const NewBoard = () => {
         },
         mode: "cors",
         body: JSON.stringify({
-          user_id: user.user_id,
+          user_id: user?.userId,
           title: title,
           description: body,
         }),
@@ -81,8 +86,7 @@ const NewBoard = () => {
         throw new Error("Error in posting a new board");
       }
 
-      // const jsonRes = await res.json();
-      history.push("/");
+      navigate("/");
     } catch (err) {
       console.log(err);
       setAlertOpen(true);
@@ -90,8 +94,8 @@ const NewBoard = () => {
   };
 
   return (
-    <Container component="main" maxWidth="ld" sx={{ marginTop: 8 }}>
-      {!user && <Redirect to="/login" />}
+    <Container component="main" sx={{ marginTop: 8 }}>
+      {!user && <Navigate to="/login" />}
       <Collapse in={alertOpen}>
         <Alert
           severity="error"
@@ -177,7 +181,6 @@ const NewBoard = () => {
       >
         <Button
           type="submit"
-          // fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
           onClick={handleSubmit}
@@ -188,4 +191,5 @@ const NewBoard = () => {
     </Container>
   );
 };
+
 export default NewBoard;

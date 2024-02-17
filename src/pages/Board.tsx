@@ -1,40 +1,38 @@
 import { makeStyles } from "@material-ui/core/styles";
-import ArrowCircleDownRoundedIcon from "@mui/icons-material/ArrowCircleDownRounded";
-import ArrowCircleDownTwoToneIcon from "@mui/icons-material/ArrowCircleDownTwoTone";
-import ArrowCircleUpRoundedIcon from "@mui/icons-material/ArrowCircleUpRounded";
-import ArrowCircleUpTwoToneIcon from "@mui/icons-material/ArrowCircleUpTwoTone";
-import CloseIcon from "@mui/icons-material/Close";
-import CommentIcon from "@mui/icons-material/Comment";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SendSharpIcon from "@mui/icons-material/SendSharp";
-import Alert from "@mui/material/Alert";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Collapse from "@mui/material/Collapse";
-import Divider from "@mui/material/Divider";
-import FormControl from "@mui/material/FormControl";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
-import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import {
+  ArrowCircleDownRounded as ArrowCircleDownRoundedIcon,
+  ArrowCircleDownTwoTone as ArrowCircleDownTwoToneIcon,
+  ArrowCircleUpRounded as ArrowCircleUpRoundedIcon,
+  ArrowCircleUpTwoTone as ArrowCircleUpTwoToneIcon,
+  Close as CloseIcon,
+  Delete as DeleteIcon,
+  SendSharp as SendSharpIcon,
+} from "@mui/icons-material";
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Collapse,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { SortType } from "../common/sortingStates";
-import Comments, { Comment } from "../components/Comments";
+import { Comment, Comments } from "../components/Comments";
 import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 import { prefURL } from "../constants/backendURL";
-import { setSortComments } from "../redux/reducers/filtersSlice";
+import routes from "../constants/route.json";
+import { User } from "../redux/reducers/userSlice";
 import { RootState } from "../redux/store";
-import { Pagination as CustomPagination } from "../utils/Pagination";
 import { getTimeDiff } from "../utils/miscUtilities";
 
 const useStyles = makeStyles((theme) => ({
@@ -72,45 +70,28 @@ interface BoardProps {
   };
 }
 
+// TO-DO: Remove this duplication of code
 type AlertType = "error" | "info" | "success" | "warning";
+
+let alertStatus: AlertType = "error",
+  alertMsg = "Error in deleting the comment, please try again!";
 
 export const Board: React.FC<BoardProps> = (props) => {
   const classes = useStyles();
   const { boardId } = props.match.params;
 
-  const user = useSelector((state: RootState) => state.user.value);
-  const filters = useSelector((state: RootState) => state.filters.value);
-  const dispatch = useDispatch();
+  const user: User | null = useSelector((state: RootState) => state.user.value);
+  const filters: Filters = useSelector(
+    (state: RootState) => state.filters.value
+  );
 
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [isBoardUpvoted, setIsBoardUpvoted] = useState<boolean>(false);
   const [isBoardDownvoted, setIsBoardDownvoted] = useState<boolean>(false);
   const [board, setBoard] = useState<any>({}); // To-Do: define the type
   const [commentBody, setCommentBody] = useState<string>("");
-  const [commentsArray, setCommentsArray] = useState<Comment[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(
-    CustomPagination.DEFAULT_FIRST_PAGE
-  );
 
-  const history = useHistory();
-
-  let commentsPages = new CustomPagination(
-    commentsArray,
-    CustomPagination.DEFAULT_PAGE_SIZE
-  );
-
-  const nextPage = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const fetchComments: () => Promise<void> = useCallback(async () => {
-    const res = await fetch(
-      `${prefURL}/api/boards/${boardId}/comments/` +
-        (filters && `?sort=${filters.sortComments}`)
-    );
-    const boardComments = await res.json();
-    setCommentsArray(boardComments);
-  }, [boardId, filters, setCommentsArray]);
+  const navigate = useNavigate();
 
   const fetchBoardDetails: () => Promise<void> = useCallback(async () => {
     const res = await fetch(`${prefURL}/api/boards/${boardId}`);
@@ -140,7 +121,6 @@ export const Board: React.FC<BoardProps> = (props) => {
     }, [user, boardId]);
 
   useEffect(() => {
-    fetchComments();
     fetchBoardDetails();
     fetchBoardUpvoteStatus();
     fetchBoardDownvoteStatus();
@@ -151,68 +131,10 @@ export const Board: React.FC<BoardProps> = (props) => {
     fetchBoardDetails,
     fetchBoardDownvoteStatus,
     fetchBoardUpvoteStatus,
-    fetchComments,
   ]);
-
-  const handleDropDownChange = (e: SelectChangeEvent<SortType>) => {
-    dispatch(setSortComments(e.target.value as SortType));
-    let updatedCommentsArray: Comment[] = [...commentsArray];
-    updatedCommentsArray.sort((comment1: Comment, comment2: Comment) => {
-      if (e.target.value === SortType.BEST) {
-        return parseInt(comment2.upvotes) - parseInt(comment1.upvotes);
-      } else if (e.target.value === SortType.NEW) {
-        return (
-          new Date(comment2.time).valueOf() - new Date(comment1.time).valueOf()
-        );
-      }
-      // OLD since COMMENTS_COUNT isn't applicable here
-      return (
-        new Date(comment1.time).valueOf() - new Date(comment2.time).valueOf()
-      );
-    });
-
-    setCommentsArray(updatedCommentsArray);
-  };
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCommentBody(e.target.value);
-  };
-
-  let alertStatus: AlertType = "error",
-    alertMsg = "Error in deleting the comment, please try again!";
-
-  const handleCommentDelete = async (comment_id: string) => {
-    if (!user) return;
-    try {
-      const res = await fetch(
-        `${prefURL}/api/boards/${boardId}/comments/${comment_id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "cors",
-          body: JSON.stringify({
-            user_id: user.userId,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Error when deleting a comment");
-      } else {
-        let updatedCommentsArray = commentsArray;
-        updatedCommentsArray = updatedCommentsArray.filter((commentItem) => {
-          return commentItem.commentId !== comment_id;
-        });
-
-        setCommentsArray(updatedCommentsArray);
-      }
-    } catch (err) {
-      alertStatus = "error";
-      alertMsg = "Error in deleting the comment, please try again!";
-      setAlertOpen(true);
-    }
   };
 
   const handleSubmit = async () => {
@@ -252,7 +174,7 @@ export const Board: React.FC<BoardProps> = (props) => {
       });
 
       setCommentBody("");
-      setCommentsArray(updatedCommentsArray);
+      // setCommentsArray(updatedCommentsArray);
     } catch (err) {
       console.log(err);
     }
@@ -281,7 +203,7 @@ export const Board: React.FC<BoardProps> = (props) => {
         alertMsg = "Could not delete the post, please try again";
         throw new Error(alertMsg);
       } else {
-        history.push("/");
+        navigate(routes.HOME);
       }
     } catch (err) {
       console.log((err as Error).message);
@@ -347,70 +269,6 @@ export const Board: React.FC<BoardProps> = (props) => {
         }
         setIsBoardDownvoted(false);
         setBoard({ ...board, ...jsonRes });
-      }
-    } catch (err) {
-      console.log((err as Error).message);
-    }
-  };
-
-  const handleCommentUpvote = async (commentId: string) => {
-    if (!user) return;
-    try {
-      const res = await fetch(`${prefURL}/api/comments/${commentId}/upvote`, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: user.userId,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Unable to upvote the comment.");
-      } else {
-        const jsonRes = await res.json();
-        let updatedCommentsArray = [...commentsArray];
-
-        updatedCommentsArray = updatedCommentsArray.map((item) => {
-          if (item.commentId !== jsonRes.comment_id) return item;
-          item.upvotes = jsonRes.upvotes;
-          return item;
-        });
-
-        setCommentsArray(updatedCommentsArray);
-      }
-    } catch (err) {
-      console.log((err as Error).message);
-    }
-  };
-
-  const handleCommentDownvote = async (commentId: string) => {
-    if (!user) return;
-    try {
-      const res = await fetch(`${prefURL}/api/comments/${commentId}/downvote`, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: user.userId,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Unable to downvote the comment.");
-      } else {
-        const jsonRes = await res.json();
-        let updatedCommentsArray = [...commentsArray];
-        updatedCommentsArray = updatedCommentsArray.map((item) => {
-          if (item.commentId !== jsonRes.comment_id) return item;
-          item.upvotes = jsonRes.upvotes;
-          return item;
-        });
-        setCommentsArray(updatedCommentsArray);
       }
     } catch (err) {
       console.log((err as Error).message);
@@ -511,12 +369,6 @@ export const Board: React.FC<BoardProps> = (props) => {
               alignItems: "center",
             }}
           >
-            <IconButton>
-              <CommentIcon />
-              <Typography variant="h6">
-                {commentsArray ? commentsArray.length : 0}
-              </Typography>
-            </IconButton>
             {user && board && user.userId === board.user_id && (
               <Button
                 variant="contained"
@@ -567,52 +419,8 @@ export const Board: React.FC<BoardProps> = (props) => {
             </>
           )}
           <br />
-          <Box sx={{ minWidth: 50 }}>
-            <FormControl>
-              <InputLabel id="demo-simple-select-label">Sort by</InputLabel>
 
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={filters.sortComments}
-                label="Sort By"
-                onChange={handleDropDownChange}
-              >
-                <MenuItem value={"best"}>best</MenuItem>
-                <MenuItem value={"new"}>new</MenuItem>
-                <MenuItem value={"old"}>old</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <InfiniteScroll
-            dataLength={commentsPages.getUptoPage(currentPage).length}
-            next={nextPage}
-            hasMore={currentPage <= commentsArray.length}
-            loader={<h4>Loading...</h4>}
-            endMessage={
-              <Typography
-                gutterBottom
-                variant="h6"
-                align="center"
-                color="primary"
-              >
-                Yay! You have seen it all
-              </Typography>
-            }
-          >
-            <Comments
-              comments={commentsPages.getUptoPage(currentPage) || []}
-              handleCommentDelete={(e, commentId) =>
-                handleCommentDelete(commentId)
-              }
-              handleCommentUpvote={(e, commentId) =>
-                handleCommentUpvote(commentId)
-              }
-              handleCommentDownvote={(e, commentId) =>
-                handleCommentDownvote(commentId)
-              }
-            />
-          </InfiniteScroll>
+          <Comments setAlertOpen={setAlertOpen} />
           <div id="bottom-detector"></div>
         </div>
       </div>

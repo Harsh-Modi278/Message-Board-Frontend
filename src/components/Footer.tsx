@@ -1,7 +1,8 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
+import React from "react";
 
 function Copyright() {
   return (
@@ -19,7 +20,7 @@ function Copyright() {
   );
 }
 
-function Footer(props) {
+const Footer: React.FC = () => {
   return (
     <Box
       component="footer"
@@ -38,6 +39,6 @@ function Footer(props) {
       </Container>
     </Box>
   );
-}
+};
 
 export default Footer;

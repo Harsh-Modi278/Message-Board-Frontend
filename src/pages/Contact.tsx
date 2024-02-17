@@ -1,14 +1,9 @@
-import React from "react";
+import { Link, List, ListItem } from "@material-ui/core";
+import { Facebook, GitHub, Instagram, Twitter } from "@material-ui/icons";
 import Box from "@mui/material/Box";
-import Link from "@material-ui/core/Link";
-import GitHubIcon from "@material-ui/icons/GitHub";
-import FacebookIcon from "@material-ui/icons/Facebook";
-import TwitterIcon from "@material-ui/icons/Twitter";
-import InstagramIcon from "@material-ui/icons/Instagram";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import React from "react";
 
-const Contact = (props) => {
+const Contact: React.FC = () => {
   return (
     <React.Fragment>
       <Box
@@ -27,11 +22,8 @@ const Contact = (props) => {
               color="inherit"
               href="https://github.com/Harsh-Modi278"
               target="_blank"
-              sx={{
-                cursor: "pointer",
-              }}
             >
-              <GitHubIcon style={{ fontSize: 50 }} />
+              <GitHub style={{ fontSize: 50 }} />
             </Link>
           </ListItem>
           <ListItem style={{ margin: "2rem" }}>
@@ -39,11 +31,8 @@ const Contact = (props) => {
               color="inherit"
               href="https://www.youtube.com/watch?v=o-YBDTqX_ZU"
               target="_blank"
-              sx={{
-                cursor: "pointer",
-              }}
             >
-              <FacebookIcon style={{ fontSize: 50 }} />
+              <Facebook style={{ fontSize: 50 }} />
             </Link>
           </ListItem>
           <ListItem style={{ margin: "2rem" }}>
@@ -51,11 +40,8 @@ const Contact = (props) => {
               color="inherit"
               href="https://www.youtube.com/watch?v=o-YBDTqX_ZU"
               target="_blank"
-              sx={{
-                cursor: "pointer",
-              }}
             >
-              <TwitterIcon style={{ fontSize: 50 }} />
+              <Twitter style={{ fontSize: 50 }} />
             </Link>
           </ListItem>
           <ListItem style={{ margin: "2rem" }}>
@@ -63,11 +49,8 @@ const Contact = (props) => {
               color="inherit"
               href="https://www.youtube.com/watch?v=o-YBDTqX_ZU"
               target="_blank"
-              sx={{
-                cursor: "pointer",
-              }}
             >
-              <InstagramIcon style={{ fontSize: 50 }} />
+              <Instagram style={{ fontSize: 50 }} />
             </Link>
           </ListItem>
         </List>

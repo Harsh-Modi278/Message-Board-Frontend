@@ -4,20 +4,21 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import { useContext } from "react";
-// import { GoogleLogin } from "react-google-login";
-import { Redirect, useHistory } from "react-router-dom";
+// import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
+import { useSelector } from "react-redux";
+import { Navigate, NavigateFunction, useNavigate } from "react-router-dom";
 import { prefURL } from "../constants/backendURL";
-import { UserContext } from "../contexts/UserContext";
+import { User, setUser } from "../redux/reducers/userSlice";
+import { RootState } from "../redux/store";
 // refresh token
 // import { refreshTokenSetup } from "../utils/refreshToken.js";
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 export default function SignIn() {
-  const { user, setUser } = useContext(UserContext);
-  const history = useHistory();
+  const user: User | null = useSelector((state: RootState) => state.user.value);
+  const navigate: NavigateFunction = useNavigate();
 
-  const onSuccess = async (res) => {
+  const onSuccess = async (res: any) => {
     try {
       const resp = await fetch(`${prefURL}/api/auth/login`, {
         method: "POST",
@@ -51,10 +52,10 @@ export default function SignIn() {
       console.log(err);
     }
     // refreshTokenSetup(res);
-    history.push("/");
+    navigate("/");
   };
 
-  const onFailure = (res) => {
+  const onFailure = (res: any) => {
     // console.log("Login failed: res:", res);
     // alert(`Failed to login.`);
     setUser(null);
@@ -62,7 +63,7 @@ export default function SignIn() {
 
   return (
     <Container component="main" maxWidth="xs" sx={{ marginBottom: 30 }}>
-      {user && <Redirect to="/" />}
+      {user && <Navigate to="/" />}
       <CssBaseline />
       <Box
         sx={{
@@ -82,7 +83,7 @@ export default function SignIn() {
         {/* <GoogleLogin
           clientId={clientId}
           buttonText="Sign In with Google"
-          onSuccess={onSuccess}
+          onSuccess={onSuccess as (res: GoogleLoginResponse | GoogleLoginResponseOffline) => void}
           onFailure={onFailure}
           cookiePolicy={"single_host_origin"}
           style={{ marginTop: "100px" }}

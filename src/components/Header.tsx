@@ -1,28 +1,39 @@
-import { React, useState, useContext } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import { SECTIONS } from "../constants/homeHeaderConstants";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { UserContext } from "../contexts/UserContext";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
+import { SECTIONS } from "../constants/homeHeaderConstants";
+import { User, setUser } from "../redux/reducers/userSlice";
 
-const Header = () => {
-  const sections = SECTIONS;
-  const { user, setUser } = useContext(UserContext);
+interface Section {
+  title: string;
+  url: string;
+}
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+const Header: React.FC = () => {
+  const sections: Section[] = SECTIONS;
+  const dispatch = useDispatch();
+  const user: User | null = useSelector((state: RootState) => state.user.value);
+
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLElement) | null>(
+    null
+  );
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<
+    (EventTarget & HTMLElement) | null
+  >(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -31,24 +42,18 @@ const Header = () => {
   };
 
   const handleMenuClose = () => {
-    // upon close event close menu
     setAnchorEl(null);
-
-    // also close mobile menu
     handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = (event) => {
+  const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
   const handleLogout = () => {
-    setUser(null);
+    dispatch(setUser(null));
     localStorage.removeItem("userObj");
-    // upon close event close menu
     setAnchorEl(null);
-
-    // also close mobile menu
     handleMobileMenuClose();
   };
 
@@ -158,12 +163,10 @@ const Header = () => {
             </Typography>
           </RouterLink>
 
-          {/* To separate items to left and right side */}
           <Box sx={{ flexGrow: 1 }} />
 
           {user && (
             <>
-              {/* Sections */}
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 {sections !== undefined &&
                   sections.length > 0 &&
@@ -185,8 +188,6 @@ const Header = () => {
                   ))}
               </Box>
 
-              {/* User account related*/}
-
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <IconButton
                   size="medium"
@@ -205,7 +206,6 @@ const Header = () => {
 
           {!user && (
             <>
-              {/* Contact section */}
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 {[{ title: "Contact", url: "/contact" }].map((section) => (
                   <RouterLink

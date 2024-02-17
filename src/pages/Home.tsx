@@ -14,7 +14,9 @@ import { setSortBoards } from "../redux/reducers/filtersSlice";
 import { RootState } from "../redux/store";
 
 export const Home: React.FC = () => {
-  const filters = useSelector((state: RootState) => state.filters.value);
+  const filters: Filters = useSelector(
+    (state: RootState) => state.filters.value
+  );
   const dispatch = useDispatch();
 
   const handleChange = (e: SelectChangeEvent<SortType>) => {
