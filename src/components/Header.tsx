@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { SECTIONS } from "../constants/homeHeaderConstants";
 import { User, setUser } from "../redux/reducers/userSlice";
+import { RootState } from "../redux/store";
 
 interface Section {
   title: string;

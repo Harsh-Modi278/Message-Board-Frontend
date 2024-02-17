@@ -8,7 +8,7 @@ import { prefURL } from "../constants/backendURL";
 import { useFetch } from "../hooks/useFetch";
 import { Pagination as CustomPagination } from "../utils/Pagination";
 import { ErrorState } from "./ErrorState/ErrorState";
-import { FeaturedBoard, Post } from "./FeaturedBoard";
+import { FeaturedBoard, Post, PostResponse, toPost } from "./FeaturedBoard";
 import { LoadingState } from "./LoadingState/LoadingState";
 
 interface FeaturedBoardsProps {
@@ -23,10 +23,15 @@ export const FeaturedBoards: React.FC<FeaturedBoardsProps> = (props) => {
 
   //GET all articles for Home page
   const {
-    data: featuredBoards,
+    data,
     isPending: isLoading,
     error: errorMessage,
-  } = useFetch<Post[]>(`${prefURL}/api/boards/` + (sort && `?sort=${sort}`));
+  } = useFetch<PostResponse[]>(
+    `${prefURL}/api/boards/` + (sort && `?sort=${sort}`)
+  );
+
+  const featuredBoards = toPost(data || []);
+  console.log({ featuredBoards, isLoading, errorMessage });
 
   const filteredPages = new CustomPagination<Post>(
     featuredBoards || [],
@@ -34,9 +39,13 @@ export const FeaturedBoards: React.FC<FeaturedBoardsProps> = (props) => {
   );
 
   return (
-    <>
+    <div>
       <CssBaseline />
-      {!!errorMessage && <ErrorState errorMessage={errorMessage} />}
+      {!!errorMessage && (
+        <ErrorState
+          errorMessage={"Error while loading the page, please try again"}
+        />
+      )}
       {isLoading && <LoadingState />}
       <main style={{ paddingTop: "1rem" }}>
         <Stack spacing={2} justifyContent="space-evenly">
@@ -62,6 +71,6 @@ export const FeaturedBoards: React.FC<FeaturedBoardsProps> = (props) => {
           />
         </Stack>
       </main>
-    </>
+    </div>
   );
 };

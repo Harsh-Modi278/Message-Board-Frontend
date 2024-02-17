@@ -8,6 +8,7 @@ interface FetchResult<T> {
 
 // there's a few bugs in this code: https://tkdodo.eu/blog/why-you-want-react-query
 export const useFetch = <T>(url: string): FetchResult<T> => {
+  console.log("useFetch - url: ", url);
   const [data, setData] = useState<T | null>(null);
   const [isPending, setIsPending] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,7 @@ export const useFetch = <T>(url: string): FetchResult<T> => {
       if (err instanceof DOMException && err.name === "AbortError") {
         console.log("fetch aborted");
       } else {
-        setError((err as Error).message);
+        console.log({ err });
         setIsPending(false);
       }
     }

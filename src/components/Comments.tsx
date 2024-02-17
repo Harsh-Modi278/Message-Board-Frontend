@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SortType } from "../common/sortingStates";
 import ReactMarkdownWrapper from "../components/ReactMarkdownWrapper";
 import { prefURL } from "../constants/backendURL";
-import { setSortComments } from "../redux/reducers/filtersSlice";
+import { Filters, setSortComments } from "../redux/reducers/filtersSlice";
 import { User } from "../redux/reducers/userSlice";
 import { RootState } from "../redux/store";
 import { Pagination as CustomPagination } from "../utils/Pagination";

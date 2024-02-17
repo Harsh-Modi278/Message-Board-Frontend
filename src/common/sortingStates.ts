@@ -1,6 +1,6 @@
 export enum SortType {
-    BEST,
-    NEW,
-    OLD,
-    COMMENTS_COUNT // sort by descending order of comments count
+  BEST = "best",
+  NEW = "new",
+  OLD = "old",
+  COMMENTS_COUNT = "comments_count", // sort by descending order of comments count
 }

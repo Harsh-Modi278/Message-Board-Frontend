@@ -14,7 +14,7 @@ import { RootState } from "../redux/store";
 // import { refreshTokenSetup } from "../utils/refreshToken.js";
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
-export default function SignIn() {
+export const SignIn: React.FC = ()=> {
   const user: User | null = useSelector((state: RootState) => state.user.value);
   const navigate: NavigateFunction = useNavigate();
 

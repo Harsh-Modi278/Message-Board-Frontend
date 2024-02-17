@@ -14,6 +14,26 @@ export interface Post {
   commentsCount: number;
   timeCreated: string;
 }
+
+export interface PostResponse {
+  board_id: string;
+  board_name: string;
+  upvotes: number;
+  comments_count: number;
+  time_created: string;
+}
+
+export const toPost = (posts: PostResponse[]): Post[] => {
+  return posts.map((post: PostResponse) => {
+    return {
+      boardId: post.board_id,
+      boardName: post.board_name,
+      upvotes: post.upvotes,
+      commentsCount: post.comments_count,
+      timeCreated: post.time_created,
+    };
+  });
+};
 interface FeaturedBoardProps {
   post: Post;
 }

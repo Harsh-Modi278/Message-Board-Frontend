@@ -3,7 +3,7 @@ import { Facebook, GitHub, Instagram, Twitter } from "@material-ui/icons";
 import Box from "@mui/material/Box";
 import React from "react";
 
-const Contact: React.FC = () => {
+export const Contact: React.FC = () => {
   return (
     <React.Fragment>
       <Box
@@ -58,5 +58,3 @@ const Contact: React.FC = () => {
     </React.Fragment>
   );
 };
-
-export default Contact;

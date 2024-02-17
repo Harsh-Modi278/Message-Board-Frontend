@@ -1,2 +1,1 @@
-export const prefURL: string =
-  "hhttps://message-board-backend-harsh-modi278.vercel.app";
+export const prefURL: string = "https://message-board-backend-eight.vercel.app";

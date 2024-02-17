@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { SortType } from "../common/sortingStates";
-import { setSortBoards } from "../redux/reducers/filtersSlice";
+import { Filters, setSortBoards } from "../redux/reducers/filtersSlice";
 import { RootState } from "../redux/store";
 
 export const Home: React.FC = () => {

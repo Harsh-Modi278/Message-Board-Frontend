@@ -34,6 +34,7 @@ import routes from "../constants/route.json";
 import { User } from "../redux/reducers/userSlice";
 import { RootState } from "../redux/store";
 import { getTimeDiff } from "../utils/miscUtilities";
+import { Filters } from "../redux/reducers/filtersSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,23 +63,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface BoardProps {
-  match: {
-    params: {
-      boardId: string;
-    };
-  };
-}
-
 // TO-DO: Remove this duplication of code
 type AlertType = "error" | "info" | "success" | "warning";
 
 let alertStatus: AlertType = "error",
   alertMsg = "Error in deleting the comment, please try again!";
 
-export const Board: React.FC<BoardProps> = (props) => {
+export const Board: React.FC<{}> = () => {
   const classes = useStyles();
-  const { boardId } = props.match.params;
+  const boardId = window.location.pathname.split("/")[2];
 
   const user: User | null = useSelector((state: RootState) => state.user.value);
   const filters: Filters = useSelector(

@@ -43,7 +43,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
   );
 };
 
-const NewBoard: React.FC = () => {
+export const NewBoard: React.FC = () => {
   const user: User | null = useSelector((state: RootState) => state.user.value);
   const navigate = useNavigate();
 
@@ -191,5 +191,3 @@ const NewBoard: React.FC = () => {
     </Container>
   );
 };
-
-export default NewBoard;

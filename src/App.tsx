@@ -22,9 +22,11 @@ const App: React.FC<AppProps> = () => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  dispatch(
-    setUser(JSON.parse(localStorage?.getItem("userObj") || "")?.profileObj)
-  );
+  // TO-DO: what is the type here?
+  const localUserObj: any = localStorage?.getItem("userObj");
+  if (!!localUserObj) {
+    dispatch(setUser(JSON.parse(localUserObj).profileObj));
+  }
 
   return (
     <div className={classes.root}>
